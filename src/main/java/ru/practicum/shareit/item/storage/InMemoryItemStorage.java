@@ -61,9 +61,7 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public List<Item> findItemsByIdOwner(Long idOwner) {
         List<Item> userItems = new ArrayList<>();
-        items.values().stream().
-                filter(a -> a.getOwner().equals(idOwner)).
-                forEach(userItems::add);
+        items.values().stream().filter(a -> a.getOwner().equals(idOwner)).forEach(userItems::add);
         return userItems;
     }
 
