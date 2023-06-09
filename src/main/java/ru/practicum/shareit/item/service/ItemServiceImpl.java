@@ -9,7 +9,7 @@ import ru.practicum.shareit.item.mapper.ItemMap;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.еrror.exception.NotFoundException;
+import ru.practicum.shareit.error.exception.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;

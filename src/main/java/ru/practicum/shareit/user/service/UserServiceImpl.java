@@ -9,8 +9,8 @@ import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.еrror.exception.EmailAlreadyExistError;
-import ru.practicum.shareit.еrror.exception.NotFoundException;
+import ru.practicum.shareit.error.exception.EmailAlreadyExistError;
+import ru.practicum.shareit.error.exception.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
