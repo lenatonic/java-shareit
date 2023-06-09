@@ -3,12 +3,15 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.Error.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
+import ru.practicum.shareit.item.mapper.ItemMap;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.еrror.exception.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -17,6 +20,7 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final UserService userService;
+    private final ItemMap itemMap;
 
     @Override
     public Item createItem(Item item) {
@@ -29,10 +33,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item updateItem(ItemPatchDto itemPatchDto) {
-        if (!itemStorage.isItemExist(itemPatchDto.getId())) {
+        Item itemById = itemStorage.findItemById(itemPatchDto.getId());
+        if (itemById == null) {
             throw new NotFoundException("Предмета с id = " + itemPatchDto.getId() + " не существует.");
         }
-        if (itemStorage.isOwner(itemPatchDto.getId(), itemPatchDto.getOwner())) {
+        if (itemById.getOwner().equals(itemPatchDto.getOwner())) {
             log.debug("Пользователь с id = {}, создаёт предмет с name = {}", itemPatchDto.getOwner(),
                     itemPatchDto.getName());
             return itemStorage.updateItem(itemPatchDto);
@@ -46,24 +51,32 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item findItemById(Long id) {
+    public ItemDto findItemById(Long id) {
         isItemExist(id);
         log.debug("Находим предмет по id = {}.", id);
-        return itemStorage.findItemById(id);
+        return itemMap.toItemDto(itemStorage.findItemById(id));
     }
 
     @Override
-    public List<Item> findItemsByIdOwner(Long idOwner) {
+    public List<ItemDto> findItemsByIdOwner(Long idOwner) {
+        List<ItemDto> itemsDto = new ArrayList<>();
         if (userService.isUserExistById(idOwner)) {
             log.debug("Вывод списка предметов владельца с id = {}.", idOwner);
-            return itemStorage.findItemsByIdOwner(idOwner);
+            itemStorage.findItemsByIdOwner(idOwner)
+                    .stream()
+                    .forEach(a -> itemsDto.add(itemMap.toItemDto(a)));
         } else {
             throw new NotFoundException("Пользователя с id = " + idOwner + " не существует.");
         }
+        return itemsDto;
     }
 
     @Override
-    public List<Item> findItemsByText(String text) {
-        return itemStorage.findItemsByText(text);
+    public List<ItemDto> findItemsByText(String text) {
+        List<ItemDto> itemsDto = new ArrayList<>();
+        itemStorage.findItemsByText(text)
+                .stream()
+                .forEach(a -> itemsDto.add(itemMap.toItemDto(a)));
+        return itemsDto;
     }
 }

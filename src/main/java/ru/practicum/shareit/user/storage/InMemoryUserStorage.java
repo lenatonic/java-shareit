@@ -7,7 +7,6 @@ import ru.practicum.shareit.user.model.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -46,26 +45,14 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public boolean isUserExistByEmail(String email) {
-        boolean answer = false;
-        if (!users.isEmpty()) {
-            Optional<User> userSearch = users.values()
-                    .stream()
-                    .filter(a -> a.getEmail().equals(email))
-                    .findFirst();
-            if (userSearch.isPresent()) {
-                answer = true;
-            }
-        }
-        return answer;
+        return users.values()
+                .stream()
+                .anyMatch(a -> a.getEmail().equals(email));
     }
 
     @Override
     public boolean isUserExistById(Long id) {
-        if (users.containsKey(id)) {
-            return true;
-        } else {
-            return false;
-        }
+        return users.containsKey(id);
     }
 
     @Override

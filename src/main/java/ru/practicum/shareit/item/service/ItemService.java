@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service;
 
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.model.Item;
 
@@ -12,9 +13,9 @@ public interface ItemService {
 
     boolean isItemExist(Long id);
 
-    Item findItemById(Long id);
+    ItemDto findItemById(Long id);
 
-    List<Item> findItemsByIdOwner(Long idOwner);
+    List<ItemDto> findItemsByIdOwner(Long idOwner);
 
-    List<Item> findItemsByText(String text);
+    List<ItemDto> findItemsByText(String text);
 }

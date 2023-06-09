@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.service;
 
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -12,11 +13,11 @@ public interface UserService {
 
     Long deleteUser(Long id);
 
-    List<User> findUsers();
+    List<UserDto> findUsers();
 
     boolean isUserExistById(Long id);
 
     boolean isUserExistByEmail(String email);
 
-    User findUserById(Long id);
+    UserDto findUserById(Long id);
 }

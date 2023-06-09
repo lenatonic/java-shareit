@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.Error.exception.EmailAlreadyExistError;
-import ru.practicum.shareit.Error.exception.NotFoundException;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserPatchDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.еrror.exception.EmailAlreadyExistError;
+import ru.practicum.shareit.еrror.exception.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,6 +22,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserStorage userStorage;
+    private final UserMapper userMapper;
 
     @Override
     public User createUser(User user) {
@@ -32,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Long id, UserPatchDto user) {
+        if (!isUserExistById(id)) {
+            throw new NotFoundException("Пользователя с id = " + id + " не существует.");
+        }
         if (isUserExistByEmail(user.getEmail()) && !findUserById(id).getEmail().equals(user.getEmail())) {
             throw new EmailAlreadyExistError(
                     "В системе уже существует другой пользователь с e-mail = " + user.getEmail());
@@ -50,19 +57,23 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public User findUserById(Long id) {
+    public UserDto findUserById(Long id) {
         if (isUserExistById(id)) {
             log.debug("Поиск данных по пользователю id = {}.", id);
-            return userStorage.findUser(id);
+            return userMapper.toUserDto(userStorage.findUser(id));
         } else {
             throw new NotFoundException("Пользователь с id = " + id + " не найден.");
         }
     }
 
     @Override
-    public List<User> findUsers() {
+    public List<UserDto> findUsers() {
+        List<UserDto> allUserDto = new ArrayList<>();
         log.debug("Вывод данных по всем существующим пользователям.");
-        return userStorage.findUsers();
+        userStorage.findUsers()
+                .stream()
+                .forEach(a -> allUserDto.add(userMapper.toUserDto(a)));
+        return allUserDto;
     }
 
     @Override

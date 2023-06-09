@@ -2,7 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.Error.exception.NotFoundException;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
@@ -28,11 +28,8 @@ public class UserController {
     @PatchMapping("/{id}")
     public User updateUser(@PathVariable(name = "id") Long id,
                            @RequestBody UserPatchDto userPatchDto) {
-        if (userService.isUserExistById(id)) {
-            return userService.updateUser(id, userPatchDto);
-        } else {
-            throw new NotFoundException("Пользователя с id = " + id + " не существует.");
-        }
+
+        return userService.updateUser(id, userPatchDto);
     }
 
     @DeleteMapping("/{id}")
@@ -41,12 +38,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findUserById(@PathVariable(name = "id") Long id) {
+    public UserDto findUserById(@PathVariable(name = "id") Long id) {
         return userService.findUserById(id);
     }
 
     @GetMapping
-    public List<User> findUsers() {
+    public List<UserDto> findUsers() {
         return userService.findUsers();
     }
 }
