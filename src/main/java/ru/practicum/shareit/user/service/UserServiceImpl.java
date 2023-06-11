@@ -25,17 +25,17 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public User createUser(User user) {
+    public UserDto createUser(User user) {
         if (!isUserExistByEmail(user.getEmail())) {
             log.debug("Создаём нового пользователя: name {}, e-mail {}.", user.getName(), user.getEmail());
-            return userStorage.createUser(user);
+            return userMapper.toUserDto(userStorage.createUser(user));
         } else {
             throw new EmailAlreadyExistError("Пользователь с e-mail: " + user.getEmail() + " уже существует.");
         }
     }
 
     @Override
-    public User updateUser(Long id, UserPatchDto user) {
+    public UserDto updateUser(Long id, UserPatchDto user) {
         if (!isUserExistById(id)) {
             throw new NotFoundException("Пользователя с id = " + id + " не существует.");
         }
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
                     "В системе уже существует другой пользователь с e-mail = " + user.getEmail());
         }
         log.debug("Редактируем данные пользователя id = {}.", id);
-        return userStorage.updateUser(id, user);
+        return userMapper.toUserDto(userStorage.updateUser(id, user));
     }
 
     @Override

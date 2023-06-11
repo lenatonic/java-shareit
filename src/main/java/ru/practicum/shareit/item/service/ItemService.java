@@ -7,7 +7,7 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 public interface ItemService {
-    Item createItem(Item item);
+    ItemDto createItem(Item item);
 
     Item updateItem(ItemPatchDto itemPatchDto);
 

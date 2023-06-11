@@ -23,10 +23,10 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMap itemMap;
 
     @Override
-    public Item createItem(Item item) {
+    public ItemDto createItem(Item item) {
         if (userService.isUserExistById(item.getOwner())) {
             log.debug("Пользователь с id = {}, создаёт предмет с name = {}", item.getOwner(), item.getName());
-            return itemStorage.createItem(item);
+            return itemMap.toItemDto(itemStorage.createItem(item));
         }
         throw new NotFoundException("Пользователя с id = " + item.getOwner() + " не существует.");
     }
