@@ -11,11 +11,11 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.exception.AccessErrorException;
 import ru.practicum.shareit.error.exception.IncorrectDateError;
 import ru.practicum.shareit.error.exception.NotFoundException;
-import ru.practicum.shareit.item.CommentRepository;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.comment.mapper.CommentMapper;
 import ru.practicum.shareit.item.comment.model.Comment;
+import ru.practicum.shareit.item.comment.repository.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
@@ -26,7 +26,6 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,15 +81,19 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Вещи с id " + id + " не существует.");
         }
         Item item = itemRepository.getById(id);
-        List<CommentDto> commentsDto = commentRepository.findAllByItemId(item.getId()).stream()
+        List<CommentDto> commentsDto = commentRepository.findByItemId(item.getId()).stream()
                 .map(CommentMapper::toCommentDto).collect(Collectors.toList());
 
         if (!idOwner.equals(item.getOwner())) {
-            return ItemMapper.toItemOwnerDto(itemRepository.getById(id));
+            ItemOwnerDto ans = ItemMapper.toItemOwnerDto(item);
+            ans.setComments(commentsDto);
+            return ans;
+
         } else {
             ItemOwnerDto ans = ItemMapper.toItemOwnerDto(item);
-            Optional<Booking> lastBooking = bookingRepository.findTop1BookingByItemIdAndEndIsBeforeAndStatusOrderByStartDesc(
-                    id, LocalDateTime.now(), Status.APPROVED);
+
+            Optional<Booking> lastBooking = bookingRepository.findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(
+                    id, Status.APPROVED, LocalDateTime.now());
 
             ans.setLastBooking(lastBooking.isEmpty() ? null : LastBookingDto.builder()
                     .id(lastBooking.get().getId())
@@ -98,8 +101,8 @@ public class ItemServiceImpl implements ItemService {
                     .start(lastBooking.get().getStart())
                     .end(lastBooking.get().getEnd())
                     .build());
-            Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItemIdAndEndIsAfterAndStatusOrderByStartAsc(//!!!!!
-                    id, LocalDateTime.now(), Status.APPROVED);
+            Optional<Booking> nextBooking = bookingRepository.findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(
+                    id, Status.APPROVED, LocalDateTime.now());
 
             ans.setNextBooking(nextBooking.isEmpty() ? null : NextBookingDto.builder()
                     .id(nextBooking.get().getId())
@@ -114,7 +117,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemOwnerDto> findItemsByIdOwner(Long idOwner) {
-        List<Item> items = itemRepository.findAllByOwner(idOwner);
+        List<Item> items = itemRepository.findByOwner(idOwner);
         if (items.isEmpty()) {
             return new ArrayList<>();
         }
@@ -125,11 +128,12 @@ public class ItemServiceImpl implements ItemService {
 
         for (ItemOwnerDto itemOwnerDto : itemOwnerDtoList) {
 
-//            List<CommentDto> commentDtos = commentService.commentDtos(itemDto.getId());
-//            itemDto.setComments(commentDtos);
+            List<CommentDto> commentsDto = commentRepository.findByItemId(itemOwnerDto.getId()).stream()
+                    .map(CommentMapper::toCommentDto).collect(Collectors.toList());
+            itemOwnerDto.setComments(commentsDto);
 
-            Optional<Booking> lastBooking = bookingRepository.findTop1BookingByItemIdAndEndIsBeforeAndStatusOrderByStartDesc(
-                    itemOwnerDto.getId(), LocalDateTime.now(), Status.APPROVED);
+            Optional<Booking> lastBooking = bookingRepository.findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(
+                    itemOwnerDto.getId(), Status.APPROVED, LocalDateTime.now());
 
             itemOwnerDto.setLastBooking(lastBooking.isEmpty() ? LastBookingDto.builder().build() : LastBookingDto.builder()
                     .id(lastBooking.get().getId())
@@ -138,8 +142,8 @@ public class ItemServiceImpl implements ItemService {
                     .end(lastBooking.get().getEnd())
                     .build());
 
-            Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItemIdAndEndIsAfterAndStatusOrderByStartAsc(///!!!
-                    itemOwnerDto.getId(), LocalDateTime.now(), Status.APPROVED);
+            Optional<Booking> nextBooking = bookingRepository.findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(
+                    itemOwnerDto.getId(), Status.APPROVED, LocalDateTime.now());
 
             itemOwnerDto.setNextBooking(nextBooking.isEmpty() ? NextBookingDto.builder().build() : NextBookingDto.builder()
                     .id(nextBooking.get().getId())
@@ -148,9 +152,6 @@ public class ItemServiceImpl implements ItemService {
                     .end(nextBooking.get().getEnd())
                     .build());
         }
-
-        itemOwnerDtoList.sort(Comparator.comparing(o -> o.getLastBooking().getStart(),
-                Comparator.nullsLast(Comparator.reverseOrder())));
 
         for (ItemOwnerDto itemOwnerDto : itemOwnerDtoList) {
             if (itemOwnerDto.getLastBooking().getBookerId() == null) {
@@ -174,18 +175,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto){
-        if(commentDto.getText() == null || commentDto.getText().isEmpty()) {
+    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
+        if (commentDto.getText() == null || commentDto.getText().isEmpty()) {
             throw new IncorrectDateError("Комментарий не должен быть пустым");
         }
-            Item item = itemRepository.findById(itemId).orElseThrow(() ->
-                    new NotFoundException("Вещи с id = " + itemId + " не существует."));
-            User author = userRepository.findById(userId).orElseThrow(() ->
-                    new NotFoundException("Пользователя с id = " + itemId + " не существует."));
-            if(bookingRepository.findTop1BookingByItemIdAndBookerIdAndEndIsBeforeAndStatusOrderByStartDesc(
-                    itemId, userId, LocalDateTime.now(), Status.APPROVED) == null) {
-                throw new IncorrectDateError("Вы не бронировали эту вещь.");
-            } else {
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+                new NotFoundException("Вещи с id = " + itemId + " не существует."));
+        User author = userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException("Пользователя с id = " + itemId + " не существует."));
+        if (bookingRepository.findTop1BookingByItemIdAndBookerIdAndEndIsBeforeAndStatusOrderByStartDesc(
+                itemId, userId, LocalDateTime.now(), Status.APPROVED) == null) {
+            throw new IncorrectDateError("Вы не бронировали эту вещь.");
+        } else {
             Comment comment = CommentMapper.toComment(commentDto, LocalDateTime.now());
             comment.setItem(item);
             comment.setAuthor(author);

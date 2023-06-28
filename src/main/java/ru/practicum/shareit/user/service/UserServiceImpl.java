@@ -23,7 +23,7 @@ class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         if (userDto.getEmail() == null || userDto.getEmail().isEmpty()
-                ||!emailPattern.matcher(userDto.getEmail()).matches()) {
+                || !emailPattern.matcher(userDto.getEmail()).matches()) {
             throw new IncorrectDateError("Поле email заполнено не верно.");
         }
         if (userDto.getName() == null || userDto.getName().isEmpty()) {
@@ -46,16 +46,6 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isUserExistById(Long id) {
-        return false;
-    }
-
-//    @Override
-//    public boolean isUserExistByEmail(String email) {
-//        return false;
-//    }
-
-    @Override
     public UserDto findUserById(Long id) {
         User userFind = userRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Пользователя с id = " + id + " не существует."));
@@ -73,71 +63,4 @@ class UserServiceImpl implements UserService {
                 id);
         return UserMapper.toUserDto(updateUser);
     }
-
-//    private final UserStorage userStorage;
-//    private final UserMapper userMapper;
-//
-//    @Override
-//    public UserDto createUser(User user) {
-//        if (!isUserExistByEmail(user.getEmail())) {
-//            log.debug("Создаём нового пользователя: name {}, e-mail {}.", user.getName(), user.getEmail());
-//            return userMapper.toUserDto(userStorage.createUser(user));
-//        } else {
-//            throw new EmailAlreadyExistError("Пользователь с e-mail: " + user.getEmail() + " уже существует.");
-//        }
-//    }
-//
-//    @Override
-//    public UserDto updateUser(Long id, UserPatchDto user) {
-//        if (!isUserExistById(id)) {
-//            throw new NotFoundException("Пользователя с id = " + id + " не существует.");
-//        }
-//        if (isUserExistByEmail(user.getEmail()) && !findUserById(id).getEmail().equals(user.getEmail())) {
-//            throw new EmailAlreadyExistError(
-//                    "В системе уже существует другой пользователь с e-mail = " + user.getEmail());
-//        }
-//        log.debug("Редактируем данные пользователя id = {}.", id);
-//        return userMapper.toUserDto(userStorage.updateUser(id, user));
-//    }
-//
-//    @Override
-//    public Long deleteUser(Long id) {
-//        if (isUserExistById(id)) {
-//            log.debug("Удаляем пользователя id = {}.", id);
-//            return userStorage.deleteUser(id);
-//        } else {
-//            throw new NotFoundException("Пользователь с id = " + id + " не найден.");
-//        }
-//    }
-//
-//    public UserDto findUserById(Long id) {
-//        if (isUserExistById(id)) {
-//            log.debug("Поиск данных по пользователю id = {}.", id);
-//            return userMapper.toUserDto(userStorage.findUser(id));
-//        } else {
-//            throw new NotFoundException("Пользователь с id = " + id + " не найден.");
-//        }
-//    }
-//
-//    @Override
-//    public List<UserDto> findUsers() {
-//        List<UserDto> allUserDto = new ArrayList<>();
-//        log.debug("Вывод данных по всем существующим пользователям.");
-//        userStorage.findUsers()
-//                .stream()
-//                .forEach(a -> allUserDto.add(userMapper.toUserDto(a)));
-//        return allUserDto;
-//    }
-//
-//    @Override
-//    public boolean isUserExistById(Long id) {
-//        log.debug("Проверка существования пользователя с id = {}.", id);
-//        return userStorage.isUserExistById(id);
-//    }
-//
-//    @Override
-//    public boolean isUserExistByEmail(String email) {
-//        log.debug("Проверка существования пользователя с e-mail = {}.", email);
-//        return userStorage.isUserExistByEmail(email);
-//    }
 }

@@ -3,9 +3,9 @@ package ru.practicum.shareit.item.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.booking.dto.LastBookingDto;
 import ru.practicum.shareit.booking.dto.NextBookingDto;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
 
 import java.util.List;
 

@@ -30,8 +30,8 @@ public class ItemController {
 
     @PatchMapping("/{id}")
     public ItemPatchDto updateItem(@PathVariable(name = "id") Long idItem,
-                           @Valid @RequestBody ItemPatchDto itemPatchDto,
-                           @RequestHeader(value = "X-Sharer-User-Id") Long idOwner) {
+                                   @Valid @RequestBody ItemPatchDto itemPatchDto,
+                                   @RequestHeader(value = "X-Sharer-User-Id") Long idOwner) {
         itemPatchDto.setId(idItem);
         itemPatchDto.setOwner(idOwner);
         return itemService.updateItem(itemPatchDto);
@@ -39,7 +39,7 @@ public class ItemController {
 
     @GetMapping("/{id}")
     public ItemOwnerDto findItemById(@RequestHeader(value = "X-Sharer-User-Id") Long idOwner,
-                                         @PathVariable(name = "id") Long id) {
+                                     @PathVariable(name = "id") Long id) {
         return itemService.findItemById(idOwner, id);
     }
 
@@ -55,8 +55,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                              @PathVariable(name = "itemId") Long itemId,
-                              @RequestBody CommentDto commentDto) {
+                                 @PathVariable(name = "itemId") Long itemId,
+                                 @RequestBody CommentDto commentDto) {
         return itemService.addComment(userId, itemId, commentDto);
     }
 }

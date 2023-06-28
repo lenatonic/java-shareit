@@ -11,7 +11,7 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.exception.IncorrectDateError;
 import ru.practicum.shareit.error.exception.NotFoundException;
-import ru.practicum.shareit.error.exception.StatusErrorExseption;
+import ru.practicum.shareit.error.exception.StatusErrorException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
@@ -118,24 +118,24 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
             case ALL:
-                bookings.addAll(bookingRepository.findAllByBookerIdOrderByStartDesc(idUser));
+                bookings.addAll(bookingRepository.findByBookerIdOrderByStartDesc(idUser));
                 break;
             case WAITING:
-                bookings.addAll(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(idUser, Status.WAITING));
+                bookings.addAll(bookingRepository.findByBookerIdAndStatusOrderByStartDesc(idUser, Status.WAITING));
                 break;
             case REJECTED:
-                bookings.addAll(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(idUser, Status.REJECTED));
+                bookings.addAll(bookingRepository.findByBookerIdAndStatusOrderByStartDesc(idUser, Status.REJECTED));
                 break;
             case CURRENT:
-                bookings.addAll(bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
+                bookings.addAll(bookingRepository.findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
                         idUser, LocalDateTime.now(), LocalDateTime.now()));
                 break;
             case PAST:
-                bookings.addAll(bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(
+                bookings.addAll(bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(
                         idUser, LocalDateTime.now()));
                 break;
             case FUTURE:
-                bookings.addAll(bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(
+                bookings.addAll(bookingRepository.findByBookerIdAndStartIsAfterOrderByStartDesc(
                         idUser, LocalDateTime.now()));
                 break;
         }
@@ -151,26 +151,26 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
             case ALL:
-                bookings.addAll(bookingRepository.findAllByItemOwnerOrderByStartDesc(idOwner));
+                bookings.addAll(bookingRepository.findByItemOwnerOrderByStartDesc(idOwner));
                 break;
             case WAITING:
-                bookings.addAll(bookingRepository.findAllByItemOwnerAndStatusOrderByStartDesc
+                bookings.addAll(bookingRepository.findByItemOwnerAndStatusOrderByStartDesc
                         (idOwner, Status.WAITING));
                 break;
             case REJECTED:
-                bookings.addAll(bookingRepository.findAllByItemOwnerAndStatusOrderByStartDesc
+                bookings.addAll(bookingRepository.findByItemOwnerAndStatusOrderByStartDesc
                         (idOwner, Status.REJECTED));
                 break;
             case CURRENT:
-                bookings.addAll(bookingRepository.findAllByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc//!!!!
+                bookings.addAll(bookingRepository.findByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc
                         (idOwner, LocalDateTime.now(), LocalDateTime.now()));
                 break;
             case PAST:
-                bookings.addAll(bookingRepository.findAllByItemOwnerAndEndIsBeforeOrderByStartDesc
+                bookings.addAll(bookingRepository.findByItemOwnerAndEndIsBeforeOrderByStartDesc
                         (idOwner, LocalDateTime.now()));
                 break;
             case FUTURE:
-                bookings.addAll(bookingRepository.findAllByItemOwnerAndStartIsAfterOrderByStartDesc
+                bookings.addAll(bookingRepository.findByItemOwnerAndStartIsAfterOrderByStartDesc
                         (idOwner, LocalDateTime.now()));
                 break;
         }
@@ -183,7 +183,7 @@ public class BookingServiceImpl implements BookingService {
         try {
             state = BookingState.valueOf(stringState);
         } catch (RuntimeException e) {
-            throw new StatusErrorExseption("Unknown state: " + stringState);
+            throw new StatusErrorException("Unknown state: " + stringState);
         }
         return state;
     }

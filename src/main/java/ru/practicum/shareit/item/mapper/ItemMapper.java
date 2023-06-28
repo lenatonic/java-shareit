@@ -49,16 +49,6 @@ public class ItemMapper {
                 .build();
     }
 
-    public static Item toItem(ItemOwnerDto itemOwnerDto) {
-        return Item.builder()
-                .id(itemOwnerDto.getId())
-                .name(itemOwnerDto.getName())
-                .description(itemOwnerDto.getDescription())
-                .owner(itemOwnerDto.getOwner())
-                .available(itemOwnerDto.getAvailable())
-                .build();
-    }
-
     public static ItemOwnerDto toItemOwnerDto(Item item) {
         return ItemOwnerDto.builder()
                 .id(item.getId())

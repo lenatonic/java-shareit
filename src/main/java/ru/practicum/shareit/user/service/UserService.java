@@ -13,9 +13,5 @@ public interface UserService {
 
     List<UserDto> findUsers();
 
-    boolean isUserExistById(Long id);
-
-//    boolean isUserExistByEmail(String email);
-
     UserDto findUserById(Long id);
 }

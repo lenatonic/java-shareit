@@ -20,14 +20,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     void up(@Param("name") String name, @Param("description") String description,
             @Param("available") Boolean available, @Param("id") Long id);
 
-    @Query
-    List<Item> findItemsByOwner(Long id);
-
     @Query(value = "FROM Item it " +
             "WHERE LOWER (it.name) LIKE LOWER (concat('%',:text,'%')) " +
             "OR LOWER (it.description) LIKE LOWER (concat('%',:text,'%')) " +
             "AND it.available = TRUE")
     List<Item> findItemsByText(@Param("text") String text);
 
-    List<Item> findAllByOwner(Long idOwner);
+    List<Item> findByOwner(Long idOwner);
 }
