@@ -94,8 +94,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto findBookingById(Long idUser, Long idBooking) {
-        UserValidateExist(idUser);
-        BookingValidateExist(idBooking);
+        userValidateExist(idUser);
+        bookingValidateExist(idBooking);
 
         User booker = userRepository.findById(idUser)
                 .orElseThrow(() -> new NotFoundException("У вас не достаточно прав."));
@@ -113,7 +113,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> findAllBookingsByIdUser(Long idUser, String stringState) {
         BookingState state = validationState(stringState);
-        UserValidateExist(idUser);
+        userValidateExist(idUser);
 
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
@@ -146,7 +146,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> findAllBookingsByIdOwner(Long idOwner, String stringState) {
         BookingState state = validationState(stringState);
-        UserValidateExist(idOwner);
+        userValidateExist(idOwner);
 
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
@@ -154,24 +154,19 @@ public class BookingServiceImpl implements BookingService {
                 bookings.addAll(bookingRepository.findByItemOwnerOrderByStartDesc(idOwner));
                 break;
             case WAITING:
-                bookings.addAll(bookingRepository.findByItemOwnerAndStatusOrderByStartDesc
-                        (idOwner, Status.WAITING));
+                bookings.addAll(bookingRepository.findByItemOwnerAndStatusOrderByStartDesc(idOwner, Status.WAITING));
                 break;
             case REJECTED:
-                bookings.addAll(bookingRepository.findByItemOwnerAndStatusOrderByStartDesc
-                        (idOwner, Status.REJECTED));
+                bookings.addAll(bookingRepository.findByItemOwnerAndStatusOrderByStartDesc(idOwner, Status.REJECTED));
                 break;
             case CURRENT:
-                bookings.addAll(bookingRepository.findByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc
-                        (idOwner, LocalDateTime.now(), LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(idOwner, LocalDateTime.now(), LocalDateTime.now()));
                 break;
             case PAST:
-                bookings.addAll(bookingRepository.findByItemOwnerAndEndIsBeforeOrderByStartDesc
-                        (idOwner, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByItemOwnerAndEndIsBeforeOrderByStartDesc(idOwner, LocalDateTime.now()));
                 break;
             case FUTURE:
-                bookings.addAll(bookingRepository.findByItemOwnerAndStartIsAfterOrderByStartDesc
-                        (idOwner, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByItemOwnerAndStartIsAfterOrderByStartDesc(idOwner, LocalDateTime.now()));
                 break;
         }
         return bookings.stream()
@@ -188,7 +183,7 @@ public class BookingServiceImpl implements BookingService {
         return state;
     }
 
-    private boolean UserValidateExist(Long idUser) {
+    private boolean userValidateExist(Long idUser) {
         if (userRepository.existsById(idUser)) {
             return true;
         } else {
@@ -196,7 +191,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private boolean BookingValidateExist(Long idBooking) {
+    private boolean bookingValidateExist(Long idBooking) {
         if (bookingRepository.existsById(idBooking)) {
             return true;
         } else {

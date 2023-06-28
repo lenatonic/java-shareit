@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query
-    List<Booking> findByItemOwnerOrderByStartDesc(Long Owner);
+    List<Booking> findByItemOwnerOrderByStartDesc(Long owner);
 
     @Transactional
     @Modifying

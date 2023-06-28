@@ -12,6 +12,6 @@ public class BookingEnterDto {
     LocalDateTime start;
     LocalDateTime end;
     Long itemId;
-    Long BookerId;
+    Long bookerId;
     Status status;
 }
