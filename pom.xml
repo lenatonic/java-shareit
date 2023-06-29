@@ -75,6 +75,10 @@
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
 
 	</dependencies>
 
@@ -85,8 +89,8 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		<plugins>
 
+		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -260,5 +264,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>
