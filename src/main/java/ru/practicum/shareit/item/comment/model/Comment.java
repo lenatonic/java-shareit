@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.comment.model;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.item.model.Item;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "comments")
 public class Comment {
 
@@ -44,17 +46,4 @@ public class Comment {
 
     public Comment() {
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Comment)) return false;
-        return id != null && (id.equals(((Comment) o).getId()));
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
-
