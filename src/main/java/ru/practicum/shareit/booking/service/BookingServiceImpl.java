@@ -2,20 +2,21 @@ package ru.practicum.shareit.booking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.booking.BookingState;
-import ru.practicum.shareit.booking.Status;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingEnterDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingState;
+import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.error.exception.IncorrectDateError;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.error.exception.StatusErrorException;
-import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto approvedBooking(Long idBooking, Long idOwner, Boolean status) {
         User user = userRepository.findById(idOwner)
                 .orElseThrow(() -> new NotFoundException("У вас не достаточно прав."));
@@ -99,14 +101,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto findBookingById(Long idUser, Long idBooking) {
         userValidateExist(idUser);
-        bookingValidateExist(idBooking);
 
-        User booker = userRepository.findById(idUser)
-                .orElseThrow(() -> new NotFoundException("У вас не достаточно прав."));
-
-        Booking booking = bookingRepository.getById(idBooking);
+        Booking booking = bookingRepository.findById(idBooking)
+                .orElseThrow(() -> new NotFoundException("Брони с id: " + idBooking + " не существует."));
 
         Optional<Item> item = itemRepository.findById(booking.getItem().getId());
         if (booking.getBooker().getId().equals(idUser) || item.get().getOwner().equals(idUser)) {
@@ -194,14 +194,6 @@ public class BookingServiceImpl implements BookingService {
             return true;
         } else {
             throw new NotFoundException("Нет пользователя с id: " + idUser);
-        }
-    }
-
-    private boolean bookingValidateExist(Long idBooking) {
-        if (bookingRepository.existsById(idBooking)) {
-            return true;
-        } else {
-            throw new NotFoundException("Брони с id: " + idBooking + " не существует.");
         }
     }
 }

@@ -3,15 +3,14 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.LastBookingDto;
 import ru.practicum.shareit.booking.dto.NextBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.error.exception.AccessErrorException;
 import ru.practicum.shareit.error.exception.IncorrectDateError;
 import ru.practicum.shareit.error.exception.NotFoundException;
-import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.comment.mapper.CommentMapper;
 import ru.practicum.shareit.item.comment.model.Comment;
@@ -21,8 +20,9 @@ import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,18 +40,10 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
+    @Transactional
     public ItemDto createItem(Item item) {
         if (!userRepository.existsById(item.getOwner())) {
             throw new NotFoundException("Пользователя с id = " + item.getOwner() + " не существует.");
-        }
-        if (item.getName() == null || item.getName().isEmpty()) {
-            throw new IncorrectDateError("У вещи отсутствует название.");
-        }
-        if (item.getDescription() == null || item.getDescription().isEmpty()) {
-            throw new IncorrectDateError("Отсутствует описание вещи.");
-        }
-        if (item.getAvailable() == null) {
-            throw new IncorrectDateError("Не выставлен статус вещи.");
         }
         Item createdItem = itemRepository.save(item);
         return ItemMapper.toItemDto(createdItem);
@@ -66,21 +58,16 @@ public class ItemServiceImpl implements ItemService {
         if (!userRepository.existsById(itemDto.getOwner())) {
             throw new NotFoundException("Пользователя с id = " + itemDto.getOwner() + " не существует.");
         }
-        if (!itemRepository.existsById(itemDto.getId())) {
-            throw new NotFoundException("Вещи с id = " + itemDto.getOwner() + " не существует.");
-        }
         Item ans = ItemMapper.toUp(updatedItem, itemDto);
-        itemRepository.up(ans.getName(), ans.getDescription(), ans.getAvailable(),
-                ans.getId());
+        itemRepository.save(ans);
         return ItemMapper.toItemPatchDto(ans);
     }
 
     @Override
+    @Transactional
     public ItemOwnerDto findItemById(Long idOwner, Long id) {
-        if (!itemRepository.existsById(id)) {
-            throw new NotFoundException("Вещи с id " + id + " не существует.");
-        }
-        Item item = itemRepository.getById(id);
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Вещи с id " + id + " не существует."));
         List<CommentDto> commentsDto = commentRepository.findByItemId(item.getId()).stream()
                 .map(CommentMapper::toCommentDto).collect(Collectors.toList());
 

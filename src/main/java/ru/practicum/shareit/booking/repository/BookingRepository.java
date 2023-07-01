@@ -1,11 +1,11 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +17,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query
     List<Booking> findByItemOwnerOrderByStartDesc(Long owner);
 
-    @Transactional
     @Modifying
     @Query(value = "update Booking b set b.status = :status where b.id = :id")
     void approvedBooking(Status status, Long id);
@@ -27,6 +26,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query
     List<Booking> findByBookerIdAndStatusOrderByStartDesc(Long bookerId, Status state);
+
+    @Query
+    List<Booking> findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartAsc(
+            Long bookerId, LocalDateTime start, LocalDateTime end);
 
     @Query
     List<Booking> findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(

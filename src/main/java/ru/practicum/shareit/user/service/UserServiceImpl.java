@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.error.exception.IncorrectDateError;
 import ru.practicum.shareit.error.exception.NotFoundException;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -59,8 +59,7 @@ class UserServiceImpl implements UserService {
                 new NotFoundException("Пользователя с id = " + id + " не существует."));
         UserDto updateUserDto = UserMapper.toUserDto(interimUser);
         User updateUser = UserMapper.toUpdateUser(updateUserDto, user);
-        userRepository.up(updateUser.getName(), updateUser.getEmail(),
-                id);
+        userRepository.save(updateUser);
         return UserMapper.toUserDto(updateUser);
     }
 }
