@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Data;
-import ru.practicum.shareit.request.ItemRequest;
+import lombok.*;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -10,20 +10,32 @@ import javax.validation.constraints.NotNull;
  * TODO Sprint add-controllers.
  */
 
-@Data
+@Getter
+@Setter
+@Entity
+@Table(name = "items")
+@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Item {
+    @Id
+    @Column(name = "id_item")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Имя не может быть пустым")
+    @Column(name = "name_item")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "Описание должно быть заполнено")
     private String description;
 
-    @NotNull
-   private Boolean available;
+    @NotNull(message = "Поле доступности предмета не проставлено")
+    private Boolean available;
 
     private Long owner;
 
-    private ItemRequest request;
+    private Long requestId;
 }

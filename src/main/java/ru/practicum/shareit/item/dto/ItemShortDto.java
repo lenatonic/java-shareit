@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.dto;
+package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,8 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class UserDto {
+public class ItemShortDto {
     Long id;
     String name;
-    String email;
 }

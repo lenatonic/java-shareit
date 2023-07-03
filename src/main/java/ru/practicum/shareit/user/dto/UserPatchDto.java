@@ -1,8 +1,10 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class UserPatchDto {
     Long id;
     String name;
