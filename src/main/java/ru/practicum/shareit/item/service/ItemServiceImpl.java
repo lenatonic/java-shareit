@@ -51,13 +51,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemPatchDto updateItem(ItemPatchDto itemDto) {
-        Item updatedItem = itemRepository.getById(itemDto.getId());
-        if (itemDto.getId() == null || !itemDto.getId().equals(updatedItem.getId())) {
-            throw new AccessErrorException("У вас нет прав для редактирования");
-        }
+        Item updatedItem = itemRepository.findById(itemDto.getId())
+                .orElseThrow(() -> new NotFoundException("Вещи с id " + itemDto.getId() + " не существует."));
         if (!userRepository.existsById(itemDto.getOwner())) {
             throw new NotFoundException("Пользователя с id = " + itemDto.getOwner() + " не существует.");
         }
+        if (itemDto.getId() == null || !itemDto.getOwner().equals(updatedItem.getOwner())) {
+            throw new AccessErrorException("У вас нет прав для редактирования");
+        }
+
         Item ans = ItemMapper.toUp(updatedItem, itemDto);
         itemRepository.save(ans);
         return ItemMapper.toItemPatchDto(ans);
