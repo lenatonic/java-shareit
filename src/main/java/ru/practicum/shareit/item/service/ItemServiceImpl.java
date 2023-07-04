@@ -84,21 +84,21 @@ public class ItemServiceImpl implements ItemService {
             Optional<Booking> lastBooking = bookingRepository.findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(
                     id, Status.APPROVED, LocalDateTime.now());
 
-            ans.setLastBooking(lastBooking.isEmpty() ? null : LastBookingDto.builder()
-                    .id(lastBooking.get().getId())
-                    .bookerId(lastBooking.get().getBooker().getId())
-                    .start(lastBooking.get().getStart())
-                    .end(lastBooking.get().getEnd())
-                    .build());
+            ans.setLastBooking(lastBooking.map(booking -> LastBookingDto.builder()
+                    .id(booking.getId())
+                    .bookerId(booking.getBooker().getId())
+                    .start(booking.getStart())
+                    .end(booking.getEnd())
+                    .build()).orElse(null));
             Optional<Booking> nextBooking = bookingRepository.findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(
                     id, Status.APPROVED, LocalDateTime.now());
 
-            ans.setNextBooking(nextBooking.isEmpty() ? null : NextBookingDto.builder()
-                    .id(nextBooking.get().getId())
-                    .bookerId(nextBooking.get().getBooker().getId())
-                    .start(nextBooking.get().getStart())
-                    .end(nextBooking.get().getEnd())
-                    .build());
+            ans.setNextBooking(nextBooking.map(booking -> NextBookingDto.builder()
+                    .id(booking.getId())
+                    .bookerId(booking.getBooker().getId())
+                    .start(booking.getStart())
+                    .end(booking.getEnd())
+                    .build()).orElse(null));
             ans.setComments(commentsDto);
             return ans;
         }
@@ -160,7 +160,7 @@ public class ItemServiceImpl implements ItemService {
         }
         return itemRepository.findItemsByText(text.toLowerCase())
                 .stream()
-                .map(item -> ItemMapper.toItemDto(item)).collect(Collectors.toList());
+                .map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override
