@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.service;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ public interface ItemRequestService {
 
     List<ItemRequestDto> findAllRequests(Long idRequestor);
 
-    List<ItemRequestDto> findAllForeignRequests(Long idUser, Long index, Long size);
+    List<ItemRequestDto> findAllForeignRequests(Long idUser, Pageable pageable);
 
     ItemRequestDto findRequestById(Long idRequest);
 

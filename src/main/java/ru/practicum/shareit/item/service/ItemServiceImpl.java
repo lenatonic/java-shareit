@@ -16,11 +16,14 @@ import ru.practicum.shareit.item.comment.mapper.CommentMapper;
 import ru.practicum.shareit.item.comment.model.Comment;
 import ru.practicum.shareit.item.comment.repository.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoCreate;
 import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -38,15 +41,22 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository requestRepository;
 
     @Override
     @Transactional
-    public ItemDto createItem(Item item) {
-        if (!userRepository.existsById(item.getOwner())) {
-            throw new NotFoundException("Пользователя с id = " + item.getOwner() + " не существует.");
+    public ItemDto createItem(ItemDto item, Long idUser) {
+        User user = userRepository.findById(idUser)
+                .orElseThrow(() -> new NotFoundException("Пользователя с id = " + idUser + " не существует."));
+        ItemRequest itemRequest = null;
+        if(item.getRequestId() != null) {
+            itemRequest = requestRepository.findById(item.getRequestId()).orElseThrow(() ->
+                    new IncorrectDateError("Запроса с id = " + item.getRequestId() + " не существует"));
         }
-        Item createdItem = itemRepository.save(item);
-        return ItemMapper.toItemDto(createdItem);
+        Item createdItem = ItemMapper.toItem(item);
+        createdItem.setOwner(user);
+        createdItem.setRequest(itemRequest);
+        return ItemMapper.toItemDto(itemRepository.save(createdItem));
     }
 
     @Override

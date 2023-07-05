@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @Entity
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "requests")
@@ -30,7 +31,4 @@ public class ItemRequest {
     private User requestor;
 
     private LocalDateTime created;
-
-    public ItemRequest() {
-    }
 }

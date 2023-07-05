@@ -1,18 +1,19 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
-/**
- * TODO Sprint add-controllers.
- */
-@Data
+@Setter
+@Getter
 @Builder
-public class ItemDto {
+public class ItemDtoCreate {
     Long id;
     String name;
     String description;
+    User owner;
     Boolean available;
-    Long requestId;
+    ItemRequest itemRequest;
 }

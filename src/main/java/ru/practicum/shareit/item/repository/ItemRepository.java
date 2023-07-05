@@ -19,6 +19,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query
     List<Item> findByOwner(Long idOwner);
 
-    @Query
-    List<Item>findByRequestId(List<Long> requestId);
+    @Query(value = "select i from Item i where i.request.id in :ids")
+    List<Item> findInRequestId(@Param("ids") List<Long> ids);
 }

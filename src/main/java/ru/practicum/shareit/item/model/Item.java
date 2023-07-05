@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -36,10 +37,11 @@ public class Item {
     @NotNull(message = "Поле доступности предмета не проставлено")
     private Boolean available;
 
-    private Long owner;
+    @ManyToOne
+    @JoinColumn(name = "owner")
+    private User owner;
 
     @ManyToOne
     @JoinColumn(name = "request_id")
-    @Column(name = "request_id")
     private ItemRequest request;
 }
