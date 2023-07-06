@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class BookingServiceImpl implements BookingService {
 
     @Autowired
@@ -39,6 +40,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
+    @Transactional
     public BookingDto createBooking(Long id, BookingEnterDto bookingEnterDto) {
         bookingEnterDto.setBookerId(id);
         bookingEnterDto.setStatus(Status.WAITING);
@@ -49,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
         User booker = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("У вас не достаточно прав."));
 
-        if (id.equals(item.getOwner())) {
+        if (id.equals(item.getOwner().getId())) {
             throw new NotFoundException("Владелец вещи не может подавать заявки на её бронь.");
         }
 
@@ -85,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
             throw new IncorrectDateError("Бронь с id = " + booking.getId() + " уже подтверждена.");
         }
 
-        if (item.getOwner().equals(idOwner)) {
+        if (item.getOwner().getId().equals(idOwner)) {
             if (status) {
                 bookingRepository.approvedBooking(Status.APPROVED, idBooking);
                 booking.setStatus(Status.APPROVED);
@@ -109,7 +111,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFoundException("Брони с id: " + idBooking + " не существует."));
 
         Optional<Item> item = itemRepository.findById(booking.getItem().getId());
-        if (booking.getBooker().getId().equals(idUser) || item.get().getOwner().equals(idUser)) {
+        if (booking.getBooker().getId().equals(idUser) || item.get().getOwner().getId().equals(idUser)) {
             return BookingMapper.toBookingDto(booking);
         } else {
             throw new NotFoundException("У вас не достаточно прав.");
@@ -117,6 +119,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public List<BookingDto> findAllBookingsByIdUser(Long idUser, String stringState) {
         BookingState state = validationState(stringState);
         userValidateExist(idUser);
@@ -150,6 +153,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public List<BookingDto> findAllBookingsByIdOwner(Long idOwner, String stringState) {
         BookingState state = validationState(stringState);
         userValidateExist(idOwner);
@@ -157,22 +161,22 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
             case ALL:
-                bookings.addAll(bookingRepository.findByItemOwnerOrderByStartDesc(idOwner));
+                bookings.addAll(bookingRepository.findByItem_Owner_IdOrderByStartDesc(idOwner));//findByItemOwnerOrderByStartDesc(idOwner));
                 break;
             case WAITING:
-                bookings.addAll(bookingRepository.findByItemOwnerAndStatusOrderByStartDesc(idOwner, Status.WAITING));
+                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(idOwner, Status.WAITING));//findByItemOwnerAndStatusOrderByStartDesc(idOwner, Status.WAITING));
                 break;
             case REJECTED:
-                bookings.addAll(bookingRepository.findByItemOwnerAndStatusOrderByStartDesc(idOwner, Status.REJECTED));
+                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(idOwner, Status.REJECTED));//findByItemOwnerAndStatusOrderByStartDesc(idOwner, Status.REJECTED));
                 break;
             case CURRENT:
-                bookings.addAll(bookingRepository.findByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(idOwner, LocalDateTime.now(), LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findAllByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(idOwner, LocalDateTime.now(), LocalDateTime.now()));
                 break;
             case PAST:
-                bookings.addAll(bookingRepository.findByItemOwnerAndEndIsBeforeOrderByStartDesc(idOwner, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findAllByItemOwnerAndEndIsBeforeOrderByStartDesc(idOwner, LocalDateTime.now()));
                 break;
             case FUTURE:
-                bookings.addAll(bookingRepository.findByItemOwnerAndStartIsAfterOrderByStartDesc(idOwner, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findAllByItemOwnerAndStartIsAfterOrderByStartDesc(idOwner, LocalDateTime.now()));
                 break;
         }
         return bookings.stream()

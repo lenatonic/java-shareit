@@ -45,14 +45,17 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto createItem(ItemDto item, Long idUser) {
+        Item createdItem = ItemMapper.toItem(item);
+
         User user = userRepository.findById(idUser)
                 .orElseThrow(() -> new NotFoundException("Пользователя с id = " + idUser + " не существует."));
+
         ItemRequest itemRequest = null;
         if (item.getRequestId() != null) {
             itemRequest = requestRepository.findById(item.getRequestId()).orElseThrow(() ->
                     new IncorrectDateError("Запроса с id = " + item.getRequestId() + " не существует"));
         }
-        Item createdItem = ItemMapper.toItem(item);
+
         createdItem.setOwner(user);
         createdItem.setRequest(itemRequest);
         return ItemMapper.toItemDto(itemRepository.save(createdItem));
