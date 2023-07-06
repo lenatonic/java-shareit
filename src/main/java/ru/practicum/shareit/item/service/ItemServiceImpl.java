@@ -16,7 +16,6 @@ import ru.practicum.shareit.item.comment.mapper.CommentMapper;
 import ru.practicum.shareit.item.comment.model.Comment;
 import ru.practicum.shareit.item.comment.repository.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoCreate;
 import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -49,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.findById(idUser)
                 .orElseThrow(() -> new NotFoundException("Пользователя с id = " + idUser + " не существует."));
         ItemRequest itemRequest = null;
-        if(item.getRequestId() != null) {
+        if (item.getRequestId() != null) {
             itemRequest = requestRepository.findById(item.getRequestId()).orElseThrow(() ->
                     new IncorrectDateError("Запроса с id = " + item.getRequestId() + " не существует"));
         }
@@ -60,16 +59,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemPatchDto updateItem(ItemPatchDto itemDto) {
+    public ItemPatchDto updateItem(ItemPatchDto itemDto, Long idItem, Long idOwner) {
+        itemDto.setId(idItem);
+        itemDto.setOwner(idOwner);
         Item updatedItem = itemRepository.findById(itemDto.getId())
                 .orElseThrow(() -> new NotFoundException("Вещи с id " + itemDto.getId() + " не существует."));
         if (!userRepository.existsById(itemDto.getOwner())) {
             throw new NotFoundException("Пользователя с id = " + itemDto.getOwner() + " не существует.");
         }
-        if (itemDto.getId() == null || !itemDto.getOwner().equals(updatedItem.getOwner())) {
+        if (itemDto.getId() == null || !idOwner.equals(updatedItem.getOwner().getId())) {
             throw new AccessErrorException("У вас нет прав для редактирования");
         }
-
         Item ans = ItemMapper.toUp(updatedItem, itemDto);
         itemRepository.save(ans);
         return ItemMapper.toItemPatchDto(ans);
@@ -83,7 +83,7 @@ public class ItemServiceImpl implements ItemService {
         List<CommentDto> commentsDto = commentRepository.findByItemId(item.getId()).stream()
                 .map(CommentMapper::toCommentDto).collect(Collectors.toList());
 
-        if (!idOwner.equals(item.getOwner())) {
+        if (!idOwner.equals(item.getOwner().getId())) {
             ItemOwnerDto ans = ItemMapper.toItemOwnerDto(item);
             ans.setComments(commentsDto);
             return ans;
@@ -116,7 +116,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemOwnerDto> findItemsByIdOwner(Long idOwner) {
-        List<Item> items = itemRepository.findByOwner(idOwner);
+        User owner = userRepository.findById(idOwner)
+                .orElseThrow(() -> new NotFoundException("Пользователя с id = " + idOwner + " не существует."));
+        List<Item> items = itemRepository.findByOwner(owner);
         if (items.isEmpty()) {
             return new ArrayList<>();
         }

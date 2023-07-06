@@ -3,8 +3,7 @@ package ru.practicum.shareit.request.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.item.dto.ItemDtoForRequestEntity;
-import ru.practicum.shareit.item.dto.ItemShortDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.Positive;
@@ -28,5 +27,5 @@ public class ItemRequestDto {
 
     private LocalDateTime created;
 
-    private List<ItemDtoForRequestEntity> items;
+    private List<ItemDto> items;
 }

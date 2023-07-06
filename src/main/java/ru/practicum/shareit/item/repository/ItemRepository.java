@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -17,8 +18,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findItemsByText(@Param("text") String text);
 
     @Query
-    List<Item> findByOwner(Long idOwner);
+    List<Item> findByOwner(User Owner);
 
-    @Query(value = "select i from Item i where i.request.id in :ids")
-    List<Item> findInRequestId(@Param("ids") List<Long> ids);
+    List<Item> findByRequestId(Long requestId);
+
+    List<Item> findByRequestIdIn(List<Long> ids);
 }

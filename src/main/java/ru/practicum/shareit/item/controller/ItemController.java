@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoCreate;
 import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.service.ItemService;
@@ -25,7 +24,6 @@ public class ItemController {
     @PostMapping
     public ItemDto createItem(@Valid @RequestBody ItemDto item,
                               @RequestHeader(value = "X-Sharer-User-Id") Long id) {
-//        item.setOwner(id);
         return itemService.createItem(item, id);
     }
 
@@ -33,9 +31,7 @@ public class ItemController {
     public ItemPatchDto updateItem(@PathVariable(name = "id") Long idItem,
                                    @Valid @RequestBody ItemPatchDto itemPatchDto,
                                    @RequestHeader(value = "X-Sharer-User-Id") Long idOwner) {
-        itemPatchDto.setId(idItem);
-        itemPatchDto.setOwner(idOwner);
-        return itemService.updateItem(itemPatchDto);
+        return itemService.updateItem(itemPatchDto, idItem, idOwner);
     }
 
     @GetMapping("/{id}")
