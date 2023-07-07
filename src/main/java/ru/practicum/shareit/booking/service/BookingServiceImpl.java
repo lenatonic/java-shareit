@@ -170,13 +170,13 @@ public class BookingServiceImpl implements BookingService {
                 bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(idOwner, Status.REJECTED));//findByItemOwnerAndStatusOrderByStartDesc(idOwner, Status.REJECTED));
                 break;
             case CURRENT:
-                bookings.addAll(bookingRepository.findAllByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(idOwner, LocalDateTime.now(), LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(idOwner, LocalDateTime.now(), LocalDateTime.now()));
                 break;
             case PAST:
-                bookings.addAll(bookingRepository.findAllByItemOwnerAndEndIsBeforeOrderByStartDesc(idOwner, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(idOwner, LocalDateTime.now()));
                 break;
             case FUTURE:
-                bookings.addAll(bookingRepository.findAllByItemOwnerAndStartIsAfterOrderByStartDesc(idOwner, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findAllByItem_Owner_IdAndStartIsAfterOrderByStartDesc(idOwner, LocalDateTime.now()));
                 break;
         }
         return bookings.stream()

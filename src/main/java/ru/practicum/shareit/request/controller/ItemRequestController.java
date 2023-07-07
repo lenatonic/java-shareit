@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,10 +33,13 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     List<ItemRequestDto> findAllForeignRequests(@RequestHeader(value = "X-Sharer-User-Id") Long idUser,
-                                                @RequestParam(name = "find", defaultValue = "0")
-                                                @PositiveOrZero Integer index,
+                                                @RequestParam(name = "from", defaultValue = "0")
+                                                @Positive Integer index,
                                                 @RequestParam(name = "size", defaultValue = "10")
-                                                @PositiveOrZero Integer size) {
+                                                @Positive Integer size) {
+//        if(index < 0 || size < 0) {
+//            throw new IncorrectDateError("Параметры вывода не верно заданы.");
+//        }
         return itemRequestService.findAllForeignRequests(idUser, PageRequest.of(index, size,
                 Sort.by("created").descending()));
     }
