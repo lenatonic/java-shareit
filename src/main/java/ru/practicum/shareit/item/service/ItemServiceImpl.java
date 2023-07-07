@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.LastBookingDto;
@@ -118,10 +121,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemOwnerDto> findItemsByIdOwner(Long idOwner) {
+    public List<ItemOwnerDto> findItemsByIdOwner(Long idOwner, Pageable pageable) {
         User owner = userRepository.findById(idOwner)
                 .orElseThrow(() -> new NotFoundException("Пользователя с id = " + idOwner + " не существует."));
-        List<Item> items = itemRepository.findByOwner(owner);
+        List<Item> items = itemRepository.findByOwner(owner, pageable).getContent();
         if (items.isEmpty()) {
             return new ArrayList<>();
         }
@@ -169,11 +172,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> findItemsByText(String text) {
+    public List<ItemDto> findItemsByText(String text, Pageable pageable) {
         if (text == null || text.isEmpty()) {
             return new ArrayList<>();
         }
-        return itemRepository.findItemsByText(text.toLowerCase())
+        return itemRepository.findItemsByText(text.toLowerCase(), pageable)
                 .stream()
                 .map(ItemMapper::toItemDto).collect(Collectors.toList());
     }

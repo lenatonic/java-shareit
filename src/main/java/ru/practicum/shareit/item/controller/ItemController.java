@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -9,6 +11,7 @@ import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 /**
@@ -41,13 +44,21 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemOwnerDto> findItemsByIdOwner(@RequestHeader(value = "X-Sharer-User-Id") Long idOwner) {
-        return itemService.findItemsByIdOwner(idOwner);
+    public List<ItemOwnerDto> findItemsByIdOwner(@RequestHeader(value = "X-Sharer-User-Id") Long idOwner,
+                                                 @RequestParam(name = "from", defaultValue = "0")
+                                                 @Positive Integer index,
+                                                 @RequestParam(name = "size", defaultValue = "10")
+                                                 @Positive Integer size) {
+        return itemService.findItemsByIdOwner(idOwner, PageRequest.of(index, size));
     }
 
     @GetMapping("/search")
-    public List<ItemDto> findItemsByText(@RequestParam String text) {
-        return itemService.findItemsByText(text);
+    public List<ItemDto> findItemsByText(@RequestParam String text,
+                                         @RequestParam(name = "from", defaultValue = "0")
+                                         @Positive Integer index,
+                                         @RequestParam(name = "size", defaultValue = "10")
+                                         @Positive Integer size) {
+        return itemService.findItemsByText(text, PageRequest.of(index, size));
     }
 
     @PostMapping("/{itemId}/comment")

@@ -1,11 +1,14 @@
 package ru.practicum.shareit.booking.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingEnterDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 /**
@@ -37,15 +40,23 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> findAllBookingsByIdOwner(@RequestHeader(value = "X-Sharer-User-Id") Long idOwner,
                                                      @RequestParam(value = "state", defaultValue = "ALL")
-                                                     String state) {
-        return bookingService.findAllBookingsByIdOwner(idOwner, state);
+                                                     String state,
+                                                     @RequestParam(name = "from", defaultValue = "0")
+                                                         @Positive Integer page,
+                                                     @RequestParam(name = "size", defaultValue = "10")
+                                                         @Positive Integer size) {
+        return bookingService.findAllBookingsByIdOwner(idOwner, state, PageRequest.of(page, size,Sort.by("start").descending()));
     }
 
     @GetMapping
     public List<BookingDto> findAllBookingsByIdUser(@RequestHeader(value = "X-Sharer-User-Id") Long idUser,
                                                     @RequestParam(value = "state", defaultValue = "ALL")
-                                                    String state) {
-        return bookingService.findAllBookingsByIdUser(idUser, state);
+                                                    String state,
+                                                    @RequestParam(name = "from", defaultValue = "0")
+                                                        @Positive Integer page,
+                                                    @RequestParam(name = "size", defaultValue = "10")
+                                                        @Positive Integer size) {
+        return bookingService.findAllBookingsByIdUser(idUser, state, PageRequest.of(page, size, Sort.by("start").descending()));
     }
 
     @GetMapping("/{bookingId}")
