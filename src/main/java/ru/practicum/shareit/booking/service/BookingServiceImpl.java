@@ -142,11 +142,11 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case PAST:
                 bookings.addAll(bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(
-                        idUser, LocalDateTime.now(), pageable));
+                        idUser, LocalDateTime.now(), pageable).getContent());
                 break;
             case FUTURE:
                 bookings.addAll(bookingRepository.findByBookerIdAndStartIsAfterOrderByStartDesc(
-                        idUser, LocalDateTime.now(), pageable));
+                        idUser, LocalDateTime.now(), pageable).getContent());
                 break;
         }
         return bookings.stream()

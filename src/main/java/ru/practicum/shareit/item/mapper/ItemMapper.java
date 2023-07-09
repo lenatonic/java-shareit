@@ -71,14 +71,4 @@ public class ItemMapper {
                 .comments(Collections.emptyList())
                 .build();
     }
-
-    public static ItemDtoForRequestEntity toItemDtoForRequest(Item item) {
-        return ItemDtoForRequestEntity.builder()
-                .id(item.getId())
-                .description(item.getDescription())
-                .name(item.getName())
-                .request(item.getRequest())
-                .available(item.getAvailable())
-                .build();
-    }
 }

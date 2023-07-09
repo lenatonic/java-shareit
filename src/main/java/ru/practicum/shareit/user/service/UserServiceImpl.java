@@ -26,8 +26,8 @@ class UserServiceImpl implements UserService {
                 || !emailPattern.matcher(userDto.getEmail()).matches()) {
             throw new IncorrectDateError("Поле email заполнено не верно.");
         }
-        if (userDto.getName() == null || userDto.getName().isEmpty()) {
-            throw new IncorrectDateError("Поле email заполнено не верно.");
+        if (userDto.getName() == null || userDto.getName().isEmpty() || userDto.getName().isBlank()) {
+            throw new IncorrectDateError("Поле name заполнено не верно.");
         }
         User userCreated = userRepository.save(UserMapper.toUser(userDto));
         return UserMapper.toUserDto(userCreated);
