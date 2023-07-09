@@ -22,15 +22,14 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -537,7 +536,7 @@ public class BookingServiceImplTest {
         assertThat(ansRejected, is(notNullValue()));
 
         when(bookingRepository.findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(any(),
-               any(), any(), any()))
+                any(), any(), any()))
                 .thenReturn(new PageImpl<>(Arrays.asList(booking)));
         List<BookingDto> ansCurrent = bookingService.findAllBookingsByIdUser(1L, "CURRENT", Pageable.unpaged());
         assertThat(ansCurrent, is(notNullValue()));
@@ -552,6 +551,7 @@ public class BookingServiceImplTest {
         List<BookingDto> ansFuture = bookingService.findAllBookingsByIdUser(1L, "FUTURE", Pageable.unpaged());
         assertThat(ansFuture, is(notNullValue()));
     }
+
     @Test
     void findAllBookingsByIdOwnerTest() {
         Pageable pageable = Pageable.unpaged();
@@ -581,6 +581,34 @@ public class BookingServiceImplTest {
         when(userRepository.existsById(anyLong()))
                 .thenReturn(true);
 
+        when(bookingRepository.findByItem_Owner_IdOrderByStartDesc(any(), any()))
+                .thenReturn(new PageImpl<>(Arrays.asList(booking)));
+        List<BookingDto> ansAll = bookingService.findAllBookingsByIdOwner(1L, "ALL", pageable);
+        assertThat(ansAll, is(notNullValue()));
 
+        when(bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(any(), any(), any()))
+                .thenReturn(new PageImpl<>(Arrays.asList(booking)));
+        List<BookingDto> ansWaiting = bookingService.findAllBookingsByIdOwner(1L, "WAITING", pageable);
+        assertThat(ansWaiting, is(notNullValue()));
+
+        when(bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(any(), any(), any()))
+                .thenReturn(new PageImpl<>(Arrays.asList(booking)));
+        List<BookingDto> ansRejected = bookingService.findAllBookingsByIdOwner(1L, "REJECTED", pageable);
+        assertThat(ansRejected, is(notNullValue()));
+
+        when(bookingRepository.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(any(), any(), any(), any()))
+                .thenReturn(new PageImpl<>(Arrays.asList(booking)));
+        List<BookingDto> ansCurrent = bookingService.findAllBookingsByIdOwner(1L, "CURRENT", pageable);
+        assertThat(ansCurrent, is(notNullValue()));
+
+        when(bookingRepository.findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(any(), any(), any()))
+                .thenReturn(new PageImpl<>(Arrays.asList(booking)));
+        List<BookingDto> ansPast = bookingService.findAllBookingsByIdOwner(1L, "PAST", pageable);
+        assertThat(ansPast, is(notNullValue()));
+
+        when(bookingRepository.findAllByItem_Owner_IdAndStartIsAfter(any(), any(), any()))
+                .thenReturn(new PageImpl<>(Arrays.asList(booking)));
+        List<BookingDto> ansFuture = bookingService.findAllBookingsByIdOwner(1L, "FUTURE", pageable);
+        assertThat(ansFuture, is(notNullValue()));
     }
 }

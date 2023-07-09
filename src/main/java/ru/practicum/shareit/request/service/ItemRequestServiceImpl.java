@@ -32,17 +32,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto addRequest(ItemRequestDto requestDto, Long idRequestor, LocalDateTime time) {
-        if (requestDto.getDescription() == null || requestDto.getDescription().isEmpty()) {
+        if (requestDto.getDescription() == null || requestDto.getDescription().isEmpty()
+                || requestDto.getDescription().isBlank()) {
             throw new IncorrectDateError("Описание не может быть не заполненным");
         }
-
         User requester = userRepository.findById(idRequestor)
                 .orElseThrow(() -> new NotFoundException("Не верные данные по id пользователя."));
-
         ItemRequest addedRequest = ItemRequestMapper.toItemRequest(requestDto, requester);
-
         addedRequest.setCreated(time);
-
         addedRequest = requestRepository.save(addedRequest);
         return ItemRequestMapper.toItemRequestDto(addedRequest);
     }
@@ -52,24 +49,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         if (!userRepository.existsById(idRequestor)) {
             throw new NotFoundException("Не верные данные по id пользователя.");
         }
-
         List<ItemRequest> itemRequests = new ArrayList<>();
-
         List<Long> idsItems = new ArrayList<>();
         List<Item> items = new ArrayList<>();
         List<ItemDto> itemsForAns = new ArrayList<>();
-
         itemRequests.addAll(requestRepository.findByRequestorIdOrderByCreatedDesc(idRequestor));//получаем список запросов по idRequestor
         List<ItemRequestDto> ans = itemRequests.stream()
                 .map(ItemRequestMapper::toItemRequestDto).collect(Collectors.toList());
-
         idsItems.addAll(ans.stream()
                 .map(ItemRequestDto::getId).collect(Collectors.toList())); //извлекаем id запросов
 
-
         items.addAll(itemRepository.findByRequestIdIn(idsItems));//findInRequestId(idsItems));
         itemsForAns.addAll(items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList()));
-
         for (ItemRequestDto request : ans) {
             for (ItemDto item : itemsForAns) {
                 if (request.getId().equals(item.getRequestId())) {
@@ -77,7 +68,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 }
             }
         }
-
         return ans;
     }
 
@@ -88,7 +78,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         List<ItemRequestDto> ans = requestRepository.findByRequestorIdNot(idUser, pageable).stream()
                 .map(ItemRequestMapper::toItemRequestDto).collect(Collectors.toList());
-
         List<Long> idsItems = new ArrayList<>();
         idsItems.addAll(ans.stream().map(ItemRequestDto::getId).collect(Collectors.toList()));
 
@@ -111,7 +100,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         if (!userRepository.existsById(idUser)) {
             throw new NotFoundException("Не верные данные по id пользователя.");
         }
-
         ItemRequest itemRequest = requestRepository.findById(idRequest)
                 .orElseThrow(() -> new NotFoundException("Запроса с id " + idRequest + " не существует."));
 
