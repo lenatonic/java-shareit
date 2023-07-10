@@ -104,7 +104,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public BookingDto findBookingById(Long idUser, Long idBooking) {
         userValidateExist(idUser);
 
@@ -150,7 +150,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
         }
         return bookings.stream()
-                .map(BookingMapper::toBookingDto).collect(Collectors.toList());
+                .map(booking -> BookingMapper.toBookingDto(booking)).collect(Collectors.toList());
     }
 
     @Override
@@ -181,7 +181,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
         }
         return bookings.stream()
-                .map(BookingMapper::toBookingDto).collect(Collectors.toList());
+                .map(booking -> BookingMapper.toBookingDto(booking)).collect(Collectors.toList());
     }
 
     private BookingState validationState(String stringState) {

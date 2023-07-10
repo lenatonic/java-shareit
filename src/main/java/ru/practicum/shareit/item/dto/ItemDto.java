@@ -16,11 +16,11 @@ public class ItemDto {
     Long id;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(min = 1, max = 30)
     String name;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(min = 1, max = 30)
     String description;
 
     @NotNull
