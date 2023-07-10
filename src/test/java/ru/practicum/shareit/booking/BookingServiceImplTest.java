@@ -17,6 +17,7 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.error.exception.IncorrectDateError;
 import ru.practicum.shareit.error.exception.NotFoundException;
+import ru.practicum.shareit.error.exception.StatusErrorException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -610,5 +611,13 @@ public class BookingServiceImplTest {
                 .thenReturn(new PageImpl<>(Arrays.asList(booking)));
         List<BookingDto> ansFuture = bookingService.findAllBookingsByIdOwner(1L, "FUTURE", pageable);
         assertThat(ansFuture, is(notNullValue()));
+    }
+
+    @Test
+    void wrongState() {
+        StatusErrorException statusErrorException;
+        statusErrorException = Assertions.assertThrows(StatusErrorException.class,
+                () -> bookingService.findAllBookingsByIdUser(1L, "WrongState", Pageable.unpaged()));
+        assertThat(statusErrorException.getMessage(), is("Unknown state: WrongState"));
     }
 }

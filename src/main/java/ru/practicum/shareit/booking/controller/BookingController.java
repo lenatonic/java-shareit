@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingEnterDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.error.exception.IncorrectDateError;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -42,10 +43,10 @@ public class BookingController {
                                                      @RequestParam(value = "state", defaultValue = "ALL")
                                                      String state,
                                                      @RequestParam(name = "from", defaultValue = "0")
-                                                         @Positive Integer page,
+                                                     @Positive Integer page,
                                                      @RequestParam(name = "size", defaultValue = "10")
-                                                         @Positive Integer size) {
-        return bookingService.findAllBookingsByIdOwner(idOwner, state, PageRequest.of(page, size,Sort.by("start").descending()));
+                                                     @Positive Integer size) {
+        return bookingService.findAllBookingsByIdOwner(idOwner, state, PageRequest.of(page, size, Sort.by("start").descending()));
     }
 
     @GetMapping
@@ -53,9 +54,13 @@ public class BookingController {
                                                     @RequestParam(value = "state", defaultValue = "ALL")
                                                     String state,
                                                     @RequestParam(name = "from", defaultValue = "0")
-                                                        @Positive Integer page,
+                                                    @Positive Integer page,
                                                     @RequestParam(name = "size", defaultValue = "10")
-                                                        @Positive Integer size) {
+                                                    @Positive Integer size) {
+        if (page < 0) {
+            throw new IncorrectDateError("");
+        }
+        page = page / size;
         return bookingService.findAllBookingsByIdUser(idUser, state, PageRequest.of(page, size, Sort.by("start").descending()));
     }
 

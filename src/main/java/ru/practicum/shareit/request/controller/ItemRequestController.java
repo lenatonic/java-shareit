@@ -37,9 +37,7 @@ public class ItemRequestController {
                                                 @Positive Integer index,
                                                 @RequestParam(name = "size", defaultValue = "10")
                                                 @Positive Integer size) {
-//        if(index < 0 || size < 0) {
-//            throw new IncorrectDateError("Параметры вывода не верно заданы.");
-//        }
+
         return itemRequestService.findAllForeignRequests(idUser, PageRequest.of(index, size,
                 Sort.by("created").descending()));
     }
