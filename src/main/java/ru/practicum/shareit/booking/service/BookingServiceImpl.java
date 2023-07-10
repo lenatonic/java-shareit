@@ -150,7 +150,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
         }
         return bookings.stream()
-                .map(booking -> BookingMapper.toBookingDto(booking)).collect(Collectors.toList());
+                .map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
@@ -181,7 +181,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
         }
         return bookings.stream()
-                .map(booking -> BookingMapper.toBookingDto(booking)).collect(Collectors.toList());
+                .map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     private BookingState validationState(String stringState) {
