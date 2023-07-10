@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ItemRequestController {
 
     @PostMapping
     ItemRequestDto addRequest(@RequestHeader(value = "X-Sharer-User-Id") Long idRequestor,
-                              @RequestBody ItemRequestDto requestDto) {
+                              @RequestBody @Valid ItemRequestDto requestDto) {
         return itemRequestService.addRequest(requestDto, idRequestor, LocalDateTime.now());
     }
 

@@ -104,7 +104,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public BookingDto findBookingById(Long idUser, Long idBooking) {
         userValidateExist(idUser);
 
@@ -120,7 +120,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BookingDto> findAllBookingsByIdUser(Long idUser, String stringState, Pageable pageable) {
         BookingState state = validationState(stringState);
         userValidateExist(idUser);
@@ -154,7 +154,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BookingDto> findAllBookingsByIdOwner(Long idOwner, String stringState, Pageable pageable) {
         BookingState state = validationState(stringState);
         userValidateExist(idOwner);

@@ -6,6 +6,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ItemRequestMapper {
@@ -14,7 +15,7 @@ public class ItemRequestMapper {
                 .id(request.getId())
                 .description(request.getDescription())
                 .requestor(request.getRequestor())
-                .items(new ArrayList<>())
+                .items(List.of())
                 .created(request.getCreated())
                 .build();
     }

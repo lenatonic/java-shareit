@@ -19,7 +19,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "AND it.available = TRUE")
     Page<Item> findItemsByText(@Param("text") String text, Pageable pageable);
 
-    @Query
     Page<Item> findByOwner(User owner, Pageable pageable);
 
     List<Item> findByRequestId(Long requestId);
