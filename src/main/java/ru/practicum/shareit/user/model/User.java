@@ -1,8 +1,6 @@
 package ru.practicum.shareit.user.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -13,7 +11,9 @@ import javax.validation.constraints.NotBlank;
  */
 @Getter
 @Setter
+@Builder
 @Entity
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "users")
 public class User {
@@ -31,4 +31,7 @@ public class User {
     @Email(message = "Введено некорректное значение email")
     @Column(name = "email_user", unique = true, nullable = false)
     private String email;
+
+    public User() {
+    }
 }

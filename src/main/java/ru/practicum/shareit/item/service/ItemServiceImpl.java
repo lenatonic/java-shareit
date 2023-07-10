@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.LastBookingDto;
@@ -21,6 +22,8 @@ import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -38,42 +41,53 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository requestRepository;
 
     @Override
     @Transactional
-    public ItemDto createItem(Item item) {
-        if (!userRepository.existsById(item.getOwner())) {
-            throw new NotFoundException("Пользователя с id = " + item.getOwner() + " не существует.");
+    public ItemDto createItem(ItemDto item, Long idUser) {
+        Item createdItem = ItemMapper.toItem(item);
+
+        User user = userRepository.findById(idUser)
+                .orElseThrow(() -> new NotFoundException("Пользователя с id = " + idUser + " не существует."));
+
+        ItemRequest itemRequest = null;
+        if (item.getRequestId() != null) {
+            itemRequest = requestRepository.findById(item.getRequestId()).orElseThrow(() ->
+                    new IncorrectDateError("Запроса с id = " + item.getRequestId() + " не существует"));
         }
-        Item createdItem = itemRepository.save(item);
-        return ItemMapper.toItemDto(createdItem);
+
+        createdItem.setOwner(user);
+        createdItem.setRequest(itemRequest);
+        return ItemMapper.toItemDto(itemRepository.save(createdItem));
     }
 
     @Override
-    public ItemPatchDto updateItem(ItemPatchDto itemDto) {
+    public ItemPatchDto updateItem(ItemPatchDto itemDto, Long idItem, Long idOwner) {
+        itemDto.setId(idItem);
+        itemDto.setOwner(idOwner);
         Item updatedItem = itemRepository.findById(itemDto.getId())
                 .orElseThrow(() -> new NotFoundException("Вещи с id " + itemDto.getId() + " не существует."));
         if (!userRepository.existsById(itemDto.getOwner())) {
             throw new NotFoundException("Пользователя с id = " + itemDto.getOwner() + " не существует.");
         }
-        if (itemDto.getId() == null || !itemDto.getOwner().equals(updatedItem.getOwner())) {
+        if (itemDto.getId() == null || !idOwner.equals(updatedItem.getOwner().getId())) {
             throw new AccessErrorException("У вас нет прав для редактирования");
         }
-
         Item ans = ItemMapper.toUp(updatedItem, itemDto);
         itemRepository.save(ans);
         return ItemMapper.toItemPatchDto(ans);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ItemOwnerDto findItemById(Long idOwner, Long id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Вещи с id " + id + " не существует."));
         List<CommentDto> commentsDto = commentRepository.findByItemId(item.getId()).stream()
                 .map(CommentMapper::toCommentDto).collect(Collectors.toList());
 
-        if (!idOwner.equals(item.getOwner())) {
+        if (!idOwner.equals(item.getOwner().getId())) {
             ItemOwnerDto ans = ItemMapper.toItemOwnerDto(item);
             ans.setComments(commentsDto);
             return ans;
@@ -84,29 +98,31 @@ public class ItemServiceImpl implements ItemService {
             Optional<Booking> lastBooking = bookingRepository.findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(
                     id, Status.APPROVED, LocalDateTime.now());
 
-            ans.setLastBooking(lastBooking.isEmpty() ? null : LastBookingDto.builder()
-                    .id(lastBooking.get().getId())
-                    .bookerId(lastBooking.get().getBooker().getId())
-                    .start(lastBooking.get().getStart())
-                    .end(lastBooking.get().getEnd())
-                    .build());
+            ans.setLastBooking(lastBooking.map(booking -> LastBookingDto.builder()
+                    .id(booking.getId())
+                    .bookerId(booking.getBooker().getId())
+                    .start(booking.getStart())
+                    .end(booking.getEnd())
+                    .build()).orElse(null));
             Optional<Booking> nextBooking = bookingRepository.findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(
                     id, Status.APPROVED, LocalDateTime.now());
 
-            ans.setNextBooking(nextBooking.isEmpty() ? null : NextBookingDto.builder()
-                    .id(nextBooking.get().getId())
-                    .bookerId(nextBooking.get().getBooker().getId())
-                    .start(nextBooking.get().getStart())
-                    .end(nextBooking.get().getEnd())
-                    .build());
+            ans.setNextBooking(nextBooking.map(booking -> NextBookingDto.builder()
+                    .id(booking.getId())
+                    .bookerId(booking.getBooker().getId())
+                    .start(booking.getStart())
+                    .end(booking.getEnd())
+                    .build()).orElse(null));
             ans.setComments(commentsDto);
             return ans;
         }
     }
 
     @Override
-    public List<ItemOwnerDto> findItemsByIdOwner(Long idOwner) {
-        List<Item> items = itemRepository.findByOwner(idOwner);
+    public List<ItemOwnerDto> findItemsByIdOwner(Long idOwner, Pageable pageable) {
+        User owner = userRepository.findById(idOwner)
+                .orElseThrow(() -> new NotFoundException("Пользователя с id = " + idOwner + " не существует."));
+        List<Item> items = itemRepository.findByOwner(owner, pageable).getContent();
         if (items.isEmpty()) {
             return new ArrayList<>();
         }
@@ -154,13 +170,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> findItemsByText(String text) {
+    public List<ItemDto> findItemsByText(String text, Pageable pageable) {
         if (text == null || text.isEmpty()) {
             return new ArrayList<>();
         }
-        return itemRepository.findItemsByText(text.toLowerCase())
+        return itemRepository.findItemsByText(text.toLowerCase(), pageable)
                 .stream()
-                .map(item -> ItemMapper.toItemDto(item)).collect(Collectors.toList());
+                .map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override

@@ -6,6 +6,8 @@ import lombok.Setter;
 import ru.practicum.shareit.booking.dto.LastBookingDto;
 import ru.practicum.shareit.booking.dto.NextBookingDto;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -21,9 +23,9 @@ public class ItemOwnerDto {
 
     private Boolean available;
 
-    private Long owner;
+    private User owner;
 
-    private Long request;
+    private ItemRequest request;
 
     private LastBookingDto lastBooking;
 

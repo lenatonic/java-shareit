@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
 
