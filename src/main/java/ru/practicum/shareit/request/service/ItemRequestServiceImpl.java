@@ -45,7 +45,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> findAllRequests(Long idRequestor) {//найти все созданные юзером запросы
+    public List<ItemRequestDto> findAllRequests(Long idRequestor) {
         if (!userRepository.existsById(idRequestor)) {
             throw new NotFoundException("Не верные данные по id пользователя.");
         }
@@ -72,7 +72,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> findAllForeignRequests(Long idUser, Pageable pageable) {//найти все запросы кроме запросов юзера
+    public List<ItemRequestDto> findAllForeignRequests(Long idUser, Pageable pageable) {
         if (!userRepository.existsById(idUser)) {
             throw new NotFoundException("Не верные данные по id пользователя.");
         }
@@ -96,7 +96,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto findRequestById(Long idRequest, Long idUser) {//найти запрос по id запроса
+    public ItemRequestDto findRequestById(Long idRequest, Long idUser) {
         if (!userRepository.existsById(idUser)) {
             throw new NotFoundException("Не верные данные по id пользователя.");
         }

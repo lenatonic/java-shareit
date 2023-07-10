@@ -423,7 +423,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void FindBookingByIdTest() {
+    void findBookingByIdTest() {
         User owner = User.builder()
                 .id(1L)
                 .name("User1")

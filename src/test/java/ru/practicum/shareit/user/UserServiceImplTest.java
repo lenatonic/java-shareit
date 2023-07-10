@@ -144,7 +144,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void UpdateUserByIdTest() {
+    void updateUserByIdTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(User.builder().id(1L).name("user").email("user@email.com").build()));
 

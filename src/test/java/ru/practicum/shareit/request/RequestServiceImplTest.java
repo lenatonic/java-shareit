@@ -155,7 +155,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
-    void FindAllForeignRequestTest() {
+    void findAllForeignRequestTest() {
         User requestor = User.builder()
                 .id(1L)
                 .name("User1")
@@ -206,14 +206,14 @@ public class RequestServiceImplTest {
         when((userRepository.existsById(any())))
                 .thenReturn(true);
 
-        NotFoundException ItemIsNotExistError;
-        ItemIsNotExistError = Assertions.assertThrows(NotFoundException.class,
+        NotFoundException itemIsNotExistError;
+        itemIsNotExistError = Assertions.assertThrows(NotFoundException.class,
                 () -> requestService.findRequestById(1L, 1L));
-        assertThat(ItemIsNotExistError.getMessage(), is("Запроса с id " + 1L + " не существует."));
+        assertThat(itemIsNotExistError.getMessage(), is("Запроса с id " + 1L + " не существует."));
     }
 
     @Test
-    void FindRequestByIdTest() {
+    void findRequestByIdTest() {
         User requestor = User.builder()
                 .id(1L)
                 .name("User1")
