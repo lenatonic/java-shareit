@@ -6,17 +6,29 @@ import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.dto.ItemShortDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Component
 public class ItemMapper {
+
+    public static Item toItem(ItemDto itemDto) {
+        return Item.builder()
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .build();
+    }
+
     public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .requestId(Optional.ofNullable(item.getRequest()).map(ItemRequest::getId).orElse(null))
                 .build();
     }
 
@@ -56,6 +68,7 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .owner(item.getOwner())
                 .available(item.getAvailable())
+                .request(item.getRequest())
                 .lastBooking(null)
                 .nextBooking(null)
                 .comments(Collections.emptyList())

@@ -1,8 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -15,6 +13,8 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "bookings")
 public class Booking {

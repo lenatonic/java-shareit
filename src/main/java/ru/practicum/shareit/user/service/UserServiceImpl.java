@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.error.exception.IncorrectDateError;
 import ru.practicum.shareit.error.exception.NotFoundException;
-import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -26,8 +26,8 @@ class UserServiceImpl implements UserService {
                 || !emailPattern.matcher(userDto.getEmail()).matches()) {
             throw new IncorrectDateError("Поле email заполнено не верно.");
         }
-        if (userDto.getName() == null || userDto.getName().isEmpty()) {
-            throw new IncorrectDateError("Поле email заполнено не верно.");
+        if (userDto.getName() == null || userDto.getName().isEmpty() || userDto.getName().isBlank()) {
+            throw new IncorrectDateError("Поле name заполнено не верно.");
         }
         User userCreated = userRepository.save(UserMapper.toUser(userDto));
         return UserMapper.toUserDto(userCreated);
