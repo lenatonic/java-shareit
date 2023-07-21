@@ -10,7 +10,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.util.List;
 
 @Controller
 @RequestMapping(path = "/users")

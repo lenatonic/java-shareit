@@ -31,45 +31,27 @@ public class BookingClient extends BaseClient {
         return post("", idBooker, bookItemRequestDto);
     }
 
-    public ResponseEntity<Object>approvedBooking(Long bookingId, Long idOwner, Boolean approved) {
+    public ResponseEntity<Object> approvedBooking(Long bookingId, Long idOwner, Boolean approved) {
         Map<String, Object> parameters = Map.of("approved", approved);
         String path = "/" + bookingId + "?approved={approved}";
         return patch(path, idOwner, parameters, null);
     }
 
-    public ResponseEntity<Object>findAllBookingsByIdOwner(Long idOwner, BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> findAllBookingsByIdOwner(Long idOwner, BookingState state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of("state", state.name(),
                 "from",from,
                 "size", size);
         return get("/owner?state={state}&from={from}&size={size}", idOwner, parameters);
     }
 
-    public ResponseEntity<Object>findAllBookingsByIdUser(Long idUser, BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> findAllBookingsByIdUser(Long idUser, BookingState state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of("state", state.name(),
                 "from",from,
                 "size", size);
         return get("?state={state}&from={from}&size={size}", idUser, parameters);
     }
 
-    public ResponseEntity<Object>findBookingById(Long idUser, Long bookingId) {
-        return get("/"+ bookingId, idUser);
+    public ResponseEntity<Object> findBookingById(Long idUser, Long bookingId) {
+        return get("/" + bookingId, idUser);
     }
-
-//    public ResponseEntity<Object> getBookings(long userId, BookingState state, Integer from, Integer size) {
-//        Map<String, Object> parameters = Map.of(
-//                "state", state.name(),
-//                "from", from,
-//                "size", size
-//        );
-//        return get("?state={state}&from={from}&size={size}", userId, parameters);
-//    }
-//
-//
-//    public ResponseEntity<Object> bookItem(long userId, BookItemRequestDto requestDto) {
-//        return post("", userId, requestDto);
-//    }
-//
-//    public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
-//        return get("/" + bookingId, userId);
-//    }
 }
