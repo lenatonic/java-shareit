@@ -15,6 +15,7 @@ public class BookItemRequestDto {
     private long itemId;
     @FutureOrPresent(message = "Время начала бронирования не может быть в прошлом")
     private LocalDateTime start;
+
     @Future(message = "Время завершения бронирования не может быть в прошлом")
     private LocalDateTime end;
 }

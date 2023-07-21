@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.dto.ItemPatchDto;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Controller
@@ -37,32 +38,33 @@ public class ItemController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> findItemById(@Positive @RequestHeader(value = "X-Sharer-User-Id") Long idOwner,
-                                     @Positive @PathVariable(name = "id") Long id) {
+                                               @Positive @PathVariable(name = "id") Long id) {
         return itemClient.findItemById(idOwner, id);
     }
 
     @GetMapping
     public ResponseEntity<Object> findItemsByIdOwner(@Positive @RequestHeader(value = "X-Sharer-User-Id") Long idOwner,
-                                                 @RequestParam(name = "from", defaultValue = "0")
-                                                 @Positive Integer from,
-                                                 @RequestParam(name = "size", defaultValue = "10")
-                                                 @Positive Integer size) {
+                                                     @RequestParam(name = "from", defaultValue = "0")
+                                                     @PositiveOrZero Integer from,
+                                                     @RequestParam(name = "size", defaultValue = "10")
+                                                     @PositiveOrZero Integer size) {
         return itemClient.findItemsByIdOwner(idOwner, from, size);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> findItemsByText(@RequestParam String text,
-                                         @RequestParam(name = "from", defaultValue = "0")
-                                         @Positive Integer from,
-                                         @RequestParam(name = "size", defaultValue = "10")
-                                         @Positive Integer size) {
-        return itemClient.findItemsByText(text, from, size);
+    public ResponseEntity<Object> findItemsByText(@NotNull @RequestHeader(value = "X-Sharer-User-Id") Long userId,
+                                                  @RequestParam String text,
+                                                  @RequestParam(name = "from", defaultValue = "0")
+                                                  @PositiveOrZero Integer from,
+                                                  @RequestParam(name = "size", defaultValue = "10")
+                                                  @PositiveOrZero Integer size) {
+        return itemClient.findItemsByText(userId, text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@NotNull @RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                                 @Positive @PathVariable(name = "itemId") Long itemId,
-                                 @RequestBody CommentDto commentDto) {
+                                             @Positive @PathVariable(name = "itemId") Long itemId,
+                                             @RequestBody CommentDto commentDto) {
         return itemClient.addComment(userId, itemId, commentDto);
     }
 }

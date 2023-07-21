@@ -9,6 +9,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,9 +32,9 @@ public class ItemRequestController {
     @GetMapping("/all")
     public ResponseEntity<Object> findAllForeignRequests(@Positive @RequestHeader(value = "X-Sharer-User-Id") Long idUser,
                                                          @RequestParam(name = "from", defaultValue = "0")
-                                                         @Positive Integer from,
+                                                         @PositiveOrZero Integer from,
                                                          @RequestParam(name = "size", defaultValue = "10")
-                                                         @Positive Integer size) {
+                                                         @PositiveOrZero Integer size) {
         return requestClient.findAllForeignRequests(idUser, from, size);
     }
 

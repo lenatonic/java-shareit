@@ -31,7 +31,7 @@ public class BookingClient extends BaseClient {
         return post("", idBooker, bookItemRequestDto);
     }
 
-    public ResponseEntity<Object>approvedBooking(Long idOwner, Long bookingId, Boolean approved) {
+    public ResponseEntity<Object>approvedBooking(Long bookingId, Long idOwner, Boolean approved) {
         Map<String, Object> parameters = Map.of("approved", approved);
         String path = "/" + bookingId + "?approved={approved}";
         return patch(path, idOwner, parameters, null);
