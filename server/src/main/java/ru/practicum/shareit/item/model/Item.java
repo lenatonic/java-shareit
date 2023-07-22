@@ -27,14 +27,11 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Имя не может быть пустым")
     @Column(name = "name_item")
     private String name;
 
-    @NotBlank(message = "Описание должно быть заполнено")
     private String description;
 
-    @NotNull(message = "Поле доступности предмета не проставлено")
     private Boolean available;
 
     @ManyToOne

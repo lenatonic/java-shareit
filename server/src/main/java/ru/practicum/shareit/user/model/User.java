@@ -3,8 +3,6 @@ package ru.practicum.shareit.user.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 /**
  * TODO Sprint add-controllers.
@@ -23,12 +21,9 @@ public class User {
     @Column(name = "id_user")
     private Long id;
 
-    @NotBlank(message = "Имя не может быть пустым")
     @Column(name = "name_user", nullable = false)
     private String name;
 
-    @NotBlank(message = "Поле email не может быть пустым")
-    @Email(message = "Введено некорректное значение email")
     @Column(name = "email_user", unique = true, nullable = false)
     private String email;
 

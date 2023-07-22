@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.dto.BookingEnterDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.error.exception.IncorrectDateError;
 
-import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -40,9 +39,9 @@ public class BookingController {
                                                      @RequestParam(value = "state", defaultValue = "ALL")
                                                      String state,
                                                      @RequestParam(name = "from", defaultValue = "0")
-                                                     @Positive Integer page,
+                                                     Integer page,
                                                      @RequestParam(name = "size", defaultValue = "10")
-                                                     @Positive Integer size) {
+                                                     Integer size) {
         return bookingService.findAllBookingsByIdOwner(idOwner, state, PageRequest.of(page, size, Sort.by("start").descending()));
     }
 
@@ -51,9 +50,9 @@ public class BookingController {
                                                     @RequestParam(value = "state", defaultValue = "ALL")
                                                     String state,
                                                     @RequestParam(name = "from", defaultValue = "0")
-                                                    @Positive Integer page,
+                                                    Integer page,
                                                     @RequestParam(name = "size", defaultValue = "10")
-                                                    @Positive Integer size) {
+                                                    Integer size) {
         if (page < 0) {
             throw new IncorrectDateError("");
         }

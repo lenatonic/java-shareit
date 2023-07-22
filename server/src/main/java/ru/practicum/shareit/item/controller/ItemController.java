@@ -9,8 +9,6 @@ import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import java.util.List;
 
 /**
@@ -24,14 +22,14 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto createItem(@Valid @RequestBody ItemDto item,
+    public ItemDto createItem(@RequestBody ItemDto item,
                               @RequestHeader(value = "X-Sharer-User-Id") Long id) {
         return itemService.createItem(item, id);
     }
 
     @PatchMapping("/{id}")
     public ItemPatchDto updateItem(@PathVariable(name = "id") Long idItem,
-                                   @Valid @RequestBody ItemPatchDto itemPatchDto,
+                                   @RequestBody ItemPatchDto itemPatchDto,
                                    @RequestHeader(value = "X-Sharer-User-Id") Long idOwner) {
         return itemService.updateItem(itemPatchDto, idItem, idOwner);
     }
@@ -45,18 +43,18 @@ public class ItemController {
     @GetMapping
     public List<ItemOwnerDto> findItemsByIdOwner(@RequestHeader(value = "X-Sharer-User-Id") Long idOwner,
                                                  @RequestParam(name = "from", defaultValue = "0")
-                                                 @Positive Integer index,
+                                                 Integer index,
                                                  @RequestParam(name = "size", defaultValue = "10")
-                                                 @Positive Integer size) {
+                                                 Integer size) {
         return itemService.findItemsByIdOwner(idOwner, PageRequest.of(index, size));
     }
 
     @GetMapping("/search")
     public List<ItemDto> findItemsByText(@RequestParam String text,
                                          @RequestParam(name = "from", defaultValue = "0")
-                                         @Positive Integer index,
+                                         Integer index,
                                          @RequestParam(name = "size", defaultValue = "10")
-                                         @Positive Integer size) {
+                                         Integer size) {
         return itemService.findItemsByText(text, PageRequest.of(index, size));
     }
 
