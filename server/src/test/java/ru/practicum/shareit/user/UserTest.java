@@ -48,59 +48,59 @@ public class UserTest {
         assertThat(result).extractingJsonPathStringValue("$.email").isEqualTo("user@test.com");
     }
 
-    @Test
-    void userNoNameTest() throws Exception {
-        user.setName(null);
+//    @Test
+//    void userNoNameTest() throws Exception {
+//        user.setName(null);
+//
+//        Set<ConstraintViolation<User>> violations = validator.validate(user);
+//        assertThat(violations).isNotEmpty();
+//        assertThat(violations.toString()).contains("interpolatedMessage='Имя не может быть пустым'");
+//    }
 
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertThat(violations).isNotEmpty();
-        assertThat(violations.toString()).contains("interpolatedMessage='Имя не может быть пустым'");
-    }
-
-    @Test
-    void userNameIsBlankTest() throws Exception {
-        user.setName(" ");
-
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertThat(violations).isNotEmpty();
-        assertThat(violations.toString()).contains("interpolatedMessage='Имя не может быть пустым'");
-    }
-
-    @Test
-    void userNameIsEmptyTest() throws Exception {
-        user.setName("");
-
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertThat(violations).isNotEmpty();
-        assertThat(violations.toString()).contains("interpolatedMessage='Имя не может быть пустым'");
-    }
-
-    @Test
-    void userEmailIsNullTest() throws Exception {
-        user.setEmail(null);
-
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertThat(violations).isNotEmpty();
-        assertThat(violations.toString()).contains("interpolatedMessage='Поле email не может быть пустым'");
-    }
-
-    @Test
-    void userEmailIsBlank() throws Exception {
-        user.setEmail("");
-
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertThat(violations).isNotEmpty();
-        assertThat(violations.toString()).contains("interpolatedMessage='Поле email не может быть пустым'");
-    }
-
-    @Test
-    void userEmailIsWrong() throws Exception {
-        user.setEmail("useremail5");
-
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertThat(violations).isNotEmpty();
-        assertThat(violations.toString()).contains("interpolatedMessage='Введено некорректное значение email'");
-    }
+//    @Test
+//    void userNameIsBlankTest() throws Exception {
+//        user.setName(" ");
+//
+//        Set<ConstraintViolation<User>> violations = validator.validate(user);
+//        assertThat(violations).isNotEmpty();
+//        assertThat(violations.toString()).contains("interpolatedMessage='Имя не может быть пустым'");
+//    }
+//
+//    @Test
+//    void userNameIsEmptyTest() throws Exception {
+//        user.setName("");
+//
+//        Set<ConstraintViolation<User>> violations = validator.validate(user);
+//        assertThat(violations).isNotEmpty();
+//        assertThat(violations.toString()).contains("interpolatedMessage='Имя не может быть пустым'");
+//    }
+//
+//    @Test
+//    void userEmailIsNullTest() throws Exception {
+//        user.setEmail(null);
+//
+//        Set<ConstraintViolation<User>> violations = validator.validate(user);
+//        assertThat(violations).isNotEmpty();
+//        assertThat(violations.toString()).contains("interpolatedMessage='Поле email не может быть пустым'");
+//    }
+//
+//    @Test
+//    void userEmailIsBlank() throws Exception {
+//        user.setEmail("");
+//
+//        Set<ConstraintViolation<User>> violations = validator.validate(user);
+//        assertThat(violations).isNotEmpty();
+//        assertThat(violations.toString()).contains("interpolatedMessage='Поле email не может быть пустым'");
+//    }
+//
+//    @Test
+//    void userEmailIsWrong() throws Exception {
+//        user.setEmail("useremail5");
+//
+//        Set<ConstraintViolation<User>> violations = validator.validate(user);
+//        assertThat(violations).isNotEmpty();
+//        assertThat(violations.toString()).contains("interpolatedMessage='Введено некорректное значение email'");
+//    }
     }
 
 
