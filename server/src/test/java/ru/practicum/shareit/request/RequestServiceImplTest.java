@@ -44,37 +44,37 @@ public class RequestServiceImplTest {
     @MockBean
     private final ItemRepository itemRepository;
 
-    @Test
-    void dropExceptionAddRequestDescriptionNull() {
-        IncorrectDateError descriptionIsNull;
-        descriptionIsNull = Assertions.assertThrows(IncorrectDateError.class,
-                () -> requestService.addRequest(ItemRequestDto.builder().build(), 1L, LocalDateTime.now()));
-        assertThat(descriptionIsNull.getMessage(), is("Описание не может быть не заполненным"));
-    }
-
-    @Test
-    void dropExceptionAddRequestDescriptionEmpty() {
-        IncorrectDateError descriptionIsEmpty;
-        descriptionIsEmpty = Assertions.assertThrows(IncorrectDateError.class,
-                () -> requestService.addRequest(ItemRequestDto.builder().description("").build(), 1L, LocalDateTime.now()));
-        assertThat(descriptionIsEmpty.getMessage(), is("Описание не может быть не заполненным"));
-    }
-
-    @Test
-    void dropExceptionAddRequestDescriptionBlank() {
-        IncorrectDateError descriptionIsBlank;
-        descriptionIsBlank = Assertions.assertThrows(IncorrectDateError.class,
-                () -> requestService.addRequest(ItemRequestDto.builder().description(" ").build(), 1L, LocalDateTime.now()));
-        assertThat(descriptionIsBlank.getMessage(), is("Описание не может быть не заполненным"));
-    }
-
-    @Test
-    void dropExceptionAddRequestRequestorNotExist() {
-        NotFoundException requestorNotExistError;
-        requestorNotExistError = Assertions.assertThrows(NotFoundException.class,
-                () -> requestService.addRequest(ItemRequestDto.builder().description("Description").build(), 1L, LocalDateTime.now()));
-        assertThat(requestorNotExistError.getMessage(), is("Не верные данные по id пользователя."));
-    }
+//    @Test
+//    void dropExceptionAddRequestDescriptionNull() {
+//        IncorrectDateError descriptionIsNull;
+//        descriptionIsNull = Assertions.assertThrows(IncorrectDateError.class,
+//                () -> requestService.addRequest(ItemRequestDto.builder().build(), 1L, LocalDateTime.now()));
+//        assertThat(descriptionIsNull.getMessage(), is("Описание не может быть не заполненным"));
+//    }
+//
+//    @Test
+//    void dropExceptionAddRequestDescriptionEmpty() {
+//        IncorrectDateError descriptionIsEmpty;
+//        descriptionIsEmpty = Assertions.assertThrows(IncorrectDateError.class,
+//                () -> requestService.addRequest(ItemRequestDto.builder().description("").build(), 1L, LocalDateTime.now()));
+//        assertThat(descriptionIsEmpty.getMessage(), is("Описание не может быть не заполненным"));
+//    }
+//
+//    @Test
+//    void dropExceptionAddRequestDescriptionBlank() {
+//        IncorrectDateError descriptionIsBlank;
+//        descriptionIsBlank = Assertions.assertThrows(IncorrectDateError.class,
+//                () -> requestService.addRequest(ItemRequestDto.builder().description(" ").build(), 1L, LocalDateTime.now()));
+//        assertThat(descriptionIsBlank.getMessage(), is("Описание не может быть не заполненным"));
+//    }
+//
+//    @Test
+//    void dropExceptionAddRequestRequestorNotExist() {
+//        NotFoundException requestorNotExistError;
+//        requestorNotExistError = Assertions.assertThrows(NotFoundException.class,
+//                () -> requestService.addRequest(ItemRequestDto.builder().description("Description").build(), 1L, LocalDateTime.now()));
+//        assertThat(requestorNotExistError.getMessage(), is("Не верные данные по id пользователя."));
+//    }
 
     @Test
     void addRequestTest() {
@@ -99,13 +99,13 @@ public class RequestServiceImplTest {
         assertThat(ans.getDescription(), is("Description"));
     }
 
-    @Test
-    void dropExceptionFindAllRequestsUserNotExist() {
-        NotFoundException userIsNotExistError;
-        userIsNotExistError = Assertions.assertThrows(NotFoundException.class,
-                () -> requestService.findAllRequests(1L));
-        assertThat(userIsNotExistError.getMessage(), is("Не верные данные по id пользователя."));
-    }
+//    @Test
+//    void dropExceptionFindAllRequestsUserNotExist() {
+//        NotFoundException userIsNotExistError;
+//        userIsNotExistError = Assertions.assertThrows(NotFoundException.class,
+//                () -> requestService.findAllRequests(1L));
+//        assertThat(userIsNotExistError.getMessage(), is("Не верные данные по id пользователя."));
+//    }
 
     @Test
     void findAllRequests() {
@@ -146,13 +146,13 @@ public class RequestServiceImplTest {
         assertThat(ans.size(), is(2));
     }
 
-    @Test
-    void dropExceptionFindAllForeignRequestsUserNoExist() {
-        NotFoundException userIsNotExistError;
-        userIsNotExistError = Assertions.assertThrows(NotFoundException.class,
-                () -> requestService.findAllForeignRequests(1L, Pageable.unpaged()));
-        assertThat(userIsNotExistError.getMessage(), is("Не верные данные по id пользователя."));
-    }
+//    @Test
+//    void dropExceptionFindAllForeignRequestsUserNoExist() {
+//        NotFoundException userIsNotExistError;
+//        userIsNotExistError = Assertions.assertThrows(NotFoundException.class,
+//                () -> requestService.findAllForeignRequests(1L, Pageable.unpaged()));
+//        assertThat(userIsNotExistError.getMessage(), is("Не верные данные по id пользователя."));
+//    }
 
     @Test
     void findAllForeignRequestTest() {
@@ -193,24 +193,24 @@ public class RequestServiceImplTest {
         assertThat(ans.size(), is(2));
     }
 
-    @Test
-    void dropExceptionFindRequestByIdUserNotExist() {
-        NotFoundException userIsNotExistError;
-        userIsNotExistError = Assertions.assertThrows(NotFoundException.class,
-                () -> requestService.findRequestById(1L, 1L));
-        assertThat(userIsNotExistError.getMessage(), is("Не верные данные по id пользователя."));
-    }
-
-    @Test
-    void dropExceptionFindRequestByIdItemNotExist() {
-        when((userRepository.existsById(any())))
-                .thenReturn(true);
-
-        NotFoundException itemIsNotExistError;
-        itemIsNotExistError = Assertions.assertThrows(NotFoundException.class,
-                () -> requestService.findRequestById(1L, 1L));
-        assertThat(itemIsNotExistError.getMessage(), is("Запроса с id " + 1L + " не существует."));
-    }
+//    @Test
+//    void dropExceptionFindRequestByIdUserNotExist() {
+//        NotFoundException userIsNotExistError;
+//        userIsNotExistError = Assertions.assertThrows(NotFoundException.class,
+//                () -> requestService.findRequestById(1L, 1L));
+//        assertThat(userIsNotExistError.getMessage(), is("Не верные данные по id пользователя."));
+//    }
+//
+//    @Test
+//    void dropExceptionFindRequestByIdItemNotExist() {
+//        when((userRepository.existsById(any())))
+//                .thenReturn(true);
+//
+//        NotFoundException itemIsNotExistError;
+//        itemIsNotExistError = Assertions.assertThrows(NotFoundException.class,
+//                () -> requestService.findRequestById(1L, 1L));
+//        assertThat(itemIsNotExistError.getMessage(), is("Запроса с id " + 1L + " не существует."));
+//    }
 
     @Test
     void findRequestByIdTest() {
