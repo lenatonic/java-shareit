@@ -22,7 +22,7 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> createBooking(@Positive @RequestHeader(value = "X-Sharer-User-Id") Long idBooker,
-                                                @RequestBody @Valid BookItemRequestDto bookItemRequestDto) {
+                                                @RequestBody BookItemRequestDto bookItemRequestDto) {
 //        if (bookItemRequestDto.getStart().isAfter(bookItemRequestDto.getEnd()))
 //            throw new IllegalArgumentException("Данные начала и завершения брони заданы некорректно.");
         return bookingClient.createBooking(idBooker, bookItemRequestDto);
