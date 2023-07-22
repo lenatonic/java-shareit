@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.error.exception.StatusErrorException;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -23,8 +22,6 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<Object> createBooking(@Positive @RequestHeader(value = "X-Sharer-User-Id") Long idBooker,
                                                 @RequestBody BookItemRequestDto bookItemRequestDto) {
-//        if (bookItemRequestDto.getStart().isAfter(bookItemRequestDto.getEnd()))
-//            throw new IllegalArgumentException("Данные начала и завершения брони заданы некорректно.");
         return bookingClient.createBooking(idBooker, bookItemRequestDto);
     }
 
