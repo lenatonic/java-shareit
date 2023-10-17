@@ -42,10 +42,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Page<Booking> findByItem_Owner_IdAndStatusOrderByStartDesc(Long owner, Status status, Pageable pageable);
 
-    Page<Booking> findAllByItem_Owner_IdAndStartIsAfter(Long owner, LocalDateTime time, Pageable pageable);//future
+    Page<Booking> findAllByItem_Owner_IdAndStartIsAfter(Long owner, LocalDateTime time, Pageable pageable);
 
     Page<Booking> findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(Long owner, LocalDateTime time1,
-                                                                      LocalDateTime time, Pageable pageable);//current
+                                                                      LocalDateTime time, Pageable pageable);
 
-    Page<Booking> findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(Long owner, LocalDateTime time, Pageable pageable);//past
+    Page<Booking> findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(Long owner, LocalDateTime time, Pageable pageable);
 }

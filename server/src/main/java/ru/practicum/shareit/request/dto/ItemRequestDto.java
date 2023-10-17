@@ -10,9 +10,6 @@ import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * TODO Sprint add-item-requests.
- */
 @Setter
 @Getter
 @Builder

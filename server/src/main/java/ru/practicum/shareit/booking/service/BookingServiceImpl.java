@@ -162,13 +162,13 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
             case ALL:
-                bookings.addAll(bookingRepository.findByItem_Owner_IdOrderByStartDesc(idOwner, pageable).getContent());//findByItemOwnerOrderByStartDesc(idOwner));
+                bookings.addAll(bookingRepository.findByItem_Owner_IdOrderByStartDesc(idOwner, pageable).getContent());
                 break;
             case WAITING:
-                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(idOwner, Status.WAITING, pageable).getContent());//findByItemOwnerAndStatusOrderByStartDesc(idOwner, Status.WAITING));
+                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(idOwner, Status.WAITING, pageable).getContent());
                 break;
             case REJECTED:
-                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(idOwner, Status.REJECTED, pageable).getContent());//findByItemOwnerAndStatusOrderByStartDesc(idOwner, Status.REJECTED));
+                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(idOwner, Status.REJECTED, pageable).getContent());
                 break;
             case CURRENT:
                 bookings.addAll(bookingRepository.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(idOwner, LocalDateTime.now(), LocalDateTime.now(), pageable).getContent());
