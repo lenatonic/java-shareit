@@ -19,4 +19,5 @@ Spring Boot, Maven, Hibernate, PostgreSql, Docker, Unit/Mock
 Для развёртывания приложения необходимо наличие Docker. Используйте команды в следующем порядке:
 1. mvn clean install
 2. docker-compose up
+
 После этого приложение готово к работе.
